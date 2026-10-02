@@ -22,8 +22,8 @@
   'use strict';
 
   /* ───────────── 1. CONFIG ───────────── */
-  const SUPABASE_URL      = 'https://YOUR-PROJECT-REF.supabase.co';
-  const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';
+  const SUPABASE_URL      = 'https://kfpambnrawqzhxwcomxo.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_2jrHl7Pc1G0MTETc002GUw_I11sqE0_';
 
   // Built-in videos of Modules 1-2 (Modules 3-5 are read from the courseware itself)
   const LEGACY_VIDEO = { 1: '8IxJaU06qJA', 2: 'D3qFmPn1pgM' };
