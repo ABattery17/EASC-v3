@@ -1710,7 +1710,7 @@ function appendInteractiveGuide(num){
   const data=GRAPH_GUIDES[num]; if(!data) return;
   const host=document.getElementById('moduleContainer'); if(!host) return;
   const wrap=document.createElement('section'); wrap.className='activity guideBlock';
-  wrap.innerHTML=`<h3 style="color:var(--cyan2);margin-top:0">${data.title}</h3><p class="sub">Answer all five guide questions. Feedback appears after each choice.</p><div class="guideQuestions"></div>`;
+  wrap.innerHTML=`<h3 style="color:var(--cyan2);margin-top:0">${data.title}</h3><p class="sub">Answer all ${data.questions.length} guide questions. Feedback appears after each choice.</p><div class="guideQuestions"></div>`;
   const qbox=wrap.querySelector('.guideQuestions');
   data.questions.forEach((q,i)=>{const d=document.createElement('div');d.className='interact';d.innerHTML=`<b>${i+1}. ${q[0]}</b><div class="choices">${q[2].map((o,j)=>`<button type="button" onclick="checkGuideAnswer(${num},${i},${j},this)">${String.fromCharCode(97+j)}) ${o}</button>`).join('')}</div><div id="guideFb_${num}_${i}" class="feedback"></div>`;qbox.appendChild(d)});
   host.appendChild(wrap);
@@ -2128,7 +2128,7 @@ try{localStorage.setItem(KEY,JSON.stringify(state.progress))}catch(e){}
 const pct=Math.round(done()/5*100);
 const set=(id,h)=>{const e=document.getElementById(id);if(e)e.innerHTML=h};
 set('pgTop',`<div class="progressRow"><span>Overall progress</span><b>${pct}%</b></div>${bar(pct)}<div class="progressRow" style="margin-top:6px"><span>${done()} of 5 modules completed · Written test ${state.progress[6].completed?('passed at '+state.progress[6].score+'%'):(state.progress[6].score?('attempted, '+state.progress[6].score+'%'):'not yet attempted')}</span></div>`);
-set('pgList',NAMES.map((n,i)=>{const p=state.progress[i+1];return `<div class="pgrow"><span>Module ${String(i+1).padStart(2,'0')} — ${n}</span><span style="color:${p.completed?'var(--good)':'var(--muted)'}">${p.completed?'✓ Completed':'In progress'}${p.score?` · ${p.score}%`:''}</span></div>`}).join('')+`<div class="pgrow"><span>Written Test — 150 items</span><span style="color:${state.progress[6].completed?'var(--good)':'var(--muted)'}">${state.progress[6].completed?'✓ Passed':(state.progress[6].score?'Attempted':'Not started')}${state.progress[6].score?` · ${state.progress[6].score}%`:''}</span></div>`);
+set('pgList',NAMES.map((n,i)=>{const p=state.progress[i+1];return `<div class="pgrow"><span>Module ${String(i+1).padStart(2,'0')} — ${n}</span><span style="color:${p.completed?'var(--good)':'var(--muted)'}">${p.completed?'✓ Completed':'In progress'}${p.score?` · ${p.score}%`:''}</span></div>`}).join('')+`<div class="pgrow"><span>Written Test — ${window.EASC_TEST_N||150} items</span><span style="color:${state.progress[6].completed?'var(--good)':'var(--muted)'}">${state.progress[6].completed?'✓ Passed':(state.progress[6].score?'Attempted':'Not started')}${state.progress[6].score?` · ${state.progress[6].score}%`:''}</span></div>`);
 try{renderBadges()}catch(e){}
 const ok=state.progress[6].score>=80;const lock=document.getElementById('certLock'),box=document.getElementById('certBox');
 if(lock&&box){lock.style.display=ok?'none':'block';box.style.display=ok?'block':'none';document.getElementById('certStudentName').textContent=String(state.userName).toUpperCase();document.getElementById('certScore').textContent=state.progress[6].score+'%';document.getElementById('certDate').textContent=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})}
@@ -2429,6 +2429,644 @@ $('setBox').innerHTML=`<h3 class="sub2">Theme</h3><div class="chips">${o('theme'
 <h3 class="sub2">Background</h3><div class="chips">${o('bg','plasma','Animated plasma')}${o('bg','static','Static gradient')}${o('bg','grid','Grid')}${o('bg','solid','Solid color')}</div><p><label>Solid color <input type="color" value="${S.bgc}" onchange="EASC_set('bgc',this.value);EASC_set('bg','solid')"></label></p><button class="btn secondary" onclick="EASC_reset()">Reset to defaults</button>`}
 window.EASC_vol=v=>{S.vol=+v;apply()};window.EASC_test=k=>sfx(k);window.EASC_reset=()=>{S=Object.assign({},D);apply();drawSettings()};
 window.drawSettings=drawSettings;drawSettings();
+})();
+
+</script>
+<!-- EAS•C in-browser editor: saved edits live in the next block. Open the page with ?edit to edit, then use Export HTML. -->
+<script id="easc-saved" type="application/json">{}</script>
+<style id="easc-editor-css">
+/* EAS•C in-browser editor (only active when the page is opened with ?edit) */
+#edPanel{position:fixed;right:14px;bottom:14px;z-index:20000;width:min(300px,calc(100vw - 28px));background:rgba(4,20,46,.96);border:1px solid #39d7ff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.5);color:#effaff;font:13px/1.4 Inter,Segoe UI,Arial,sans-serif}
+#edPanel .edp-h{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;font-weight:800;letter-spacing:.06em;font-size:12px}
+#edPanel .edp-h .dot2{width:9px;height:9px;border-radius:50%;background:#35e78b;margin-left:auto}
+#edPanel.dirty .edp-h .dot2{background:#ffd66b;box-shadow:0 0 8px #ffd66b}
+#edPanel .edp-b{padding:0 12px 12px;display:grid;gap:8px}
+#edPanel.min .edp-b{display:none}
+#edPanel button,.ed-wrap button,.ed-card button,.edModal button,.ed-q button,.ed-pg button,.ed-note button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid rgba(57,215,255,.5);background:rgba(32,200,255,.12);color:#effaff;padding:6px 10px}
+#edPanel button:hover,.ed-wrap button:hover,.ed-card button:hover,.edModal button:hover,.ed-q button:hover,.ed-pg button:hover{background:rgba(32,200,255,.28)}
+#edPanel button.pri,.edModal button.pri{background:linear-gradient(100deg,#08a9ed,#0877ff);border-color:#20c8ff;font-weight:800}
+#edPanel button.on{background:#35e78b;color:#04121f;border-color:#35e78b;font-weight:800}
+#edPanel .edp-s{font-size:11px;color:#9db9d8}
+#edPanel .row{display:flex;gap:8px;flex-wrap:wrap}#edPanel .row>*{flex:1}
+html[data-theme=light] #edPanel{background:#f4f8ff;color:#12203a}html[data-theme=light] #edPanel button{color:#12203a}
+
+.ed-note{margin:0 0 10px;padding:8px 10px;border-radius:10px;border:1px dashed #ffd66b;background:rgba(255,214,107,.08);font-size:12px}
+.ed-wrap{position:relative;margin:6px 0 14px}
+.ed-toolbar{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:6px;margin-bottom:8px;border-radius:10px;background:rgba(3,17,43,.97);border:1px solid rgba(57,215,255,.5)}
+html[data-theme=light] .ed-toolbar{background:#eaf2fc}
+.ed-toolbar button{padding:4px 9px;min-width:30px}
+.ed-toolbar .sep{width:1px;align-self:stretch;background:rgba(57,215,255,.35);margin:0 3px}
+.ed-toolbar details{position:relative}.ed-toolbar summary{list-style:none;cursor:pointer;padding:4px 9px;border-radius:8px;border:1px solid rgba(57,215,255,.5);background:rgba(32,200,255,.12);user-select:none}
+.ed-toolbar summary::-webkit-details-marker{display:none}
+.ed-toolbar details[open]>summary{background:rgba(32,200,255,.35)}
+.ed-menu{position:absolute;left:0;top:calc(100% + 4px);z-index:60;min-width:210px;max-width:84vw;display:grid;gap:4px;padding:8px;border-radius:10px;background:#04142e;border:1px solid #39d7ff;box-shadow:0 10px 30px rgba(0,0,0,.55)}
+html[data-theme=light] .ed-menu{background:#fff}
+.ed-menu.sym{grid-template-columns:repeat(8,1fr);min-width:260px}.ed-menu.sym button{padding:5px 0;text-align:center}
+.ed-menu button{text-align:left}
+.ed-tbl{display:none;gap:4px;align-items:center}.ed-tbl.show{display:contents}
+.ed-zone{outline:1px dashed rgba(57,215,255,.55);outline-offset:6px;border-radius:6px;min-height:60px;padding:2px}
+.ed-zone:focus{outline:2px solid #39d7ff}
+.ed-zone>*{position:relative}
+.ed-zone>.ed-active{box-shadow:0 0 0 2px rgba(255,214,107,.8);border-radius:8px}
+.ed-zone table{border-collapse:collapse}.ed-zone td,.ed-zone th{min-width:40px}
+.ed-blockbar{position:absolute;right:0;z-index:40;display:none;gap:3px;padding:3px;border-radius:8px;background:rgba(3,17,43,.97);border:1px solid #ffd66b}
+.ed-blockbar.show{display:flex}.ed-blockbar button{padding:2px 8px;font-size:12px}
+.ed-li{display:inline-block;min-width:60%;outline:1px dashed rgba(57,215,255,.5);padding:1px 4px;border-radius:4px}
+.ed-x{margin-left:8px;padding:0 7px!important;font-size:11px}
+
+.ed-q{display:grid;gap:12px}
+.ed-card{padding:12px;border-radius:12px;border:1px solid rgba(57,215,255,.4);background:rgba(4,24,50,.55);display:grid;gap:8px}
+.ed-card .hd{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.ed-card .hd b{margin-right:auto;color:var(--cyan2)}
+.ed-card textarea,.ed-card input[type=text],.ed-card select,.ed-search{width:100%;background:rgba(0,0,0,.28);color:var(--white);border:1px solid rgba(57,215,255,.4);border-radius:8px;padding:7px 9px;font:inherit}
+html[data-theme=light] .ed-card textarea,html[data-theme=light] .ed-card input[type=text],html[data-theme=light] .ed-card select,html[data-theme=light] .ed-search{background:#fff;color:#12203a}
+.ed-card textarea{resize:vertical;min-height:54px}
+.ed-card .opt{display:grid;grid-template-columns:auto 22px 1fr auto;gap:6px;align-items:center}
+.ed-card .opt .why{grid-column:2 / -1}
+.ed-card .opt input[type=radio]{accent-color:#35e78b;width:18px;height:18px}
+.ed-card label.l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ed-warn{color:#ffd66b;font-size:11px}
+.ed-pg{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+.ed-add{border-style:dashed!important;padding:10px!important}
+.edModal{position:fixed;inset:0;z-index:21000;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:14px}
+.edModal>div{background:#04142e;color:#effaff;border:1px solid #39d7ff;border-radius:14px;padding:18px;max-width:440px;width:100%;display:grid;gap:10px}
+html[data-theme=light] .edModal>div{background:#fff;color:#12203a}
+.edModal input[type=number],.edModal input[type=text]{background:rgba(0,0,0,.28);color:inherit;border:1px solid rgba(57,215,255,.5);border-radius:8px;padding:7px;width:100%}
+#edToast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:22000;background:#04142e;color:#effaff;border:1px solid #39d7ff;border-radius:10px;padding:10px 16px;font-size:13px;max-width:92vw;display:none}
+#edToast.show{display:block}
+
+@media(max-width:700px){#edPanel{bottom:8px;right:8px}}
+</style>
+<script id="easc-editor">
+/* =====================================================================
+   EAS•C in-browser editor
+   ─ Open the courseware with  ?edit  at the end of the address
+     (example:  https://yourname.github.io/yourrepo/?edit  or  index.html?edit)
+   ─ Edit objectives, content (text, tables, definitions, key formulas),
+     activity instructions, guide questions, performance questions and the
+     150-item Written Test, add / remove / reorder sections and questions,
+     then press  "Export HTML"  and replace index.html in GitHub with it.
+   ─ Edits are stored in the <script id="easc-saved"> block of index.html, so
+     the exported file is one self-contained page. Students (no ?edit) never
+     see any editor controls.
+   ===================================================================== */
+(function () {
+  'use strict';
+  const LSK = 'EASC_editor_draft_v1';
+  const EDITOR_ON = /[?&]edit(=|&|$)/.test(location.search) || location.hash === '#edit';
+  const $ = id => document.getElementById(id);
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const enc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const dec = s => { const t = document.createElement('textarea'); t.innerHTML = String(s == null ? '' : s); return t.value; };
+  const clean = h => (window.DOMPurify ? window.DOMPurify.sanitize(String(h == null ? '' : h)) : String(h == null ? '' : h));
+  const MODNAMES = ['Null & Alternative Hypotheses', 'Level of Significance', 'Hypothesis Testing', 'Correlation Analysis', 'Scatter Plot & Regression'];
+
+  function h(tag, props, ...kids) {
+    const e = document.createElement(tag);
+    Object.entries(props || {}).forEach(([k, v]) => {
+      if (k === 'class') e.className = v;
+      else if (k === 'text') e.textContent = v;
+      else if (k === 'html') e.innerHTML = v;
+      else if (k === 'value') e.value = v;
+      else if (k === 'checked') e.checked = !!v;
+      else if (k === 'disabled') e.disabled = !!v;
+      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v);
+    });
+    kids.flat().forEach(c => c != null && e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
+    return e;
+  }
+
+  /* ───────────── saved content (embedded in the HTML) ───────────── */
+  let EMB = {};
+  try { EMB = JSON.parse(($('easc-saved') || {}).textContent || '{}') || {}; } catch (e) { EMB = {}; }
+  EMB.v = 1; EMB.modules = EMB.modules || {};
+  let S = clone(EMB), restored = false;
+  if (EDITOR_ON) {
+    try { const d = JSON.parse(localStorage.getItem(LSK) || 'null'); if (d && d.data) { S = d.data; restored = JSON.stringify(S) !== JSON.stringify(EMB); } } catch (e) { }
+  }
+  S.v = 1; S.modules = S.modules || {};
+  const mod = n => (S.modules[n] = S.modules[n] || {});
+  window.EASC_TEST_N = S.test ? S.test.length : 150;
+
+  const C = window.EASC_CONTENT;
+  const copyItem = it => {
+    const o = { q: it.q, o: it.o.slice(), a: it.a, w: it.w || '' };
+    if (it.r && it.r.some(Boolean)) { o.r = it.o.map((_, i) => it.r[i] || ''); }
+    if (it.s) o.s = it.s;
+    if (it.m != null) o.m = it.m;
+    return o;
+  };
+
+  /* apply saved data to the live courseware data (runs for everyone) */
+  (function applyData() {
+    if (!C) return;
+    Object.keys(S.modules).forEach(k => {
+      const n = +k, m = S.modules[k]; if (!(n >= 1 && n <= 5)) return;
+      if (m.obj) C.OBJ[n] = m.obj.slice();
+      if (m.act != null) C.ACT[n] = m.act;
+      if (m.perf && C.WH[n]) C.WH[n].splice(0, C.WH[n].length, ...m.perf.map(x => Object.assign({}, x, { o: x.o.slice() })));
+      if (m.guide && typeof GRAPH_GUIDES !== 'undefined' && GRAPH_GUIDES[n]) GRAPH_GUIDES[n].questions = m.guide.map(q => [q[0], q[1], q[2].slice()]);
+    });
+  })();
+
+  /* ───────────── draft / dirty ───────────── */
+  let EDIT = EDITOR_ON, tmr = null;
+  const isDirty = () => JSON.stringify(S) !== JSON.stringify(EMB);
+  function persist() {
+    try { localStorage.setItem(LSK, JSON.stringify({ t: Date.now(), data: S })); } catch (e) { }
+    updDirty();
+  }
+  function touch() { clearTimeout(tmr); tmr = setTimeout(persist, 250); const p = $('edPanel'); if (p) p.classList.add('dirty'); }
+  function updDirty() {
+    const p = $('edPanel'); if (!p) return;
+    const d = isDirty(); p.classList.toggle('dirty', d);
+    const s = $('edStatus'); if (s) s.textContent = d ? 'Unexported changes (auto-saved as a draft in this browser).' : 'No unexported changes.';
+  }
+  function toast(msg) {
+    let t = $('edToast'); if (!t) { t = h('div', { id: 'edToast' }); document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 4200);
+  }
+  function modal(title, bodyNodes, buttons) {
+    const m = h('div', { class: 'edModal' }), box = h('div', {});
+    box.appendChild(h('b', { text: title }));
+    [].concat(bodyNodes).forEach(n => box.appendChild(typeof n === 'string' ? h('p', { html: n, style: 'margin:0;font-size:13px' }) : n));
+    const row = h('div', { class: 'row', style: 'display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap' });
+    buttons.forEach(b => row.appendChild(h('button', { class: b.pri ? 'pri' : '', text: b.t, onclick: () => { if (b.fn && b.fn() === false) return; m.remove(); } })));
+    box.appendChild(row); m.appendChild(box); document.body.appendChild(m); return m;
+  }
+
+  /* ───────────── math helpers ───────────── */
+  function unrender(root) {
+    root.querySelectorAll('.katex-display').forEach(k => {
+      const a = k.querySelector('annotation[encoding="application/x-tex"]');
+      k.replaceWith(document.createTextNode('$$' + (a ? a.textContent : '') + '$$'));
+    });
+    root.querySelectorAll('.katex').forEach(k => {
+      const a = k.querySelector('annotation[encoding="application/x-tex"]');
+      k.replaceWith(document.createTextNode('$' + (a ? a.textContent : '') + '$'));
+    });
+  }
+  function serialize(zone) {
+    const c = zone.cloneNode(true);
+    c.querySelectorAll('.ed-ui').forEach(x => x.remove());
+    unrender(c);
+    c.querySelectorAll('[contenteditable]').forEach(x => x.removeAttribute('contenteditable'));
+    c.querySelectorAll('.ed-active').forEach(x => { x.classList.remove('ed-active'); if (!x.className) x.removeAttribute('class'); });
+    c.querySelectorAll('[style=""]').forEach(x => x.removeAttribute('style'));
+    return c.innerHTML.trim();
+  }
+
+  /* ───────────── rich-text zones (content, activity instructions) ───────────── */
+  const ZONES = [];
+  const SYMS = ['α', 'β', 'μ', 'σ', 'π', 'ρ', 'χ', 'Σ', '≠', '≤', '≥', '±', '×', '÷', '√', '∞', '₀', '₁', '₂', '²', 'x̄', 'ŷ', 'H₀', 'H₁', 'μ₀', '→', '≈', '°'];
+  const TPL = {
+    heading: () => '<h4 style="color:var(--cyan2);margin:18px 0 8px;font-size:13px">New heading</h4>',
+    para: () => '<p>New paragraph. Click here and type.</p>',
+    section: () => '<div class="p-4 rounded-xl border" style="background:var(--easc-card);border-color:var(--easc-border)"><h5 class="font-orbitron font-bold text-xs" style="color:var(--easc-accent)">NEW SECTION TITLE</h5><p class="text-xs mt-2 leading-relaxed">Write the section text here.</p></div>',
+    def: () => '<div class="p-4 rounded-xl border" style="background:var(--easc-card);border-color:var(--easc-border)"><h5 class="font-orbitron font-bold text-xs" style="color:var(--easc-accent)">DEFINITION</h5><p class="text-xs mt-2 leading-relaxed"><strong>Term:</strong> write the definition here.</p></div>',
+    formula: () => '<div class="math-display">$$ y = mx + b $$</div>',
+    takeaway: () => '<div class="mt-4 p-3 rounded-lg bg-cyan-950/50 border border-cyan-500/20 text-xs text-cyan-200"><strong class="text-cyan-300">KEY TAKEAWAY:</strong> Write the key idea here.</div>',
+    example: () => '<p><b>Example.</b> Describe the worked example here.</p>',
+    ul: () => '<ul style="padding-left:22px;list-style:disc"><li>First point</li><li>Second point</li></ul>',
+    ol: () => '<ol style="padding-left:20px;line-height:1.85"><li><b>First step</b> — describe it.</li><li><b>Second step</b> — describe it.</li></ol>',
+    hr: () => '<hr style="border-color:var(--easc-border);margin:14px 0">'
+  };
+  const tableHTML = (r, c, head) => {
+    let t = '<table class="fbt"><tbody>';
+    for (let i = 0; i < r; i++) {
+      t += '<tr>';
+      for (let j = 0; j < c; j++) t += (head && i === 0) ? '<th>Heading</th>' : '<td>Text</td>';
+      t += '</tr>';
+    }
+    return t + '</tbody></table>';
+  };
+
+  function blockOf(zone) {
+    const s = window.getSelection(); if (!s || !s.anchorNode || !zone.contains(s.anchorNode)) return null;
+    let n = s.anchorNode.nodeType === 3 ? s.anchorNode.parentNode : s.anchorNode;
+    while (n && n.parentNode !== zone) n = n.parentNode;
+    return n && n !== zone ? n : null;
+  }
+  function placeCaret(el, selectAll) {
+    const r = document.createRange(); r.selectNodeContents(el); if (!selectAll) r.collapse(true);
+    const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  function ensureFocus(zone) {
+    const s = window.getSelection();
+    if (s.anchorNode && zone.contains(s.anchorNode)) return;
+    zone.focus(); const r = document.createRange(); r.selectNodeContents(zone); r.collapse(false); s.removeAllRanges(); s.addRange(r);
+  }
+
+  function richZone(zone, label, onSave) {
+    zone.classList.add('ed-zone'); zone.contentEditable = 'true'; zone.spellcheck = true;
+    const wrap = h('div', { class: 'ed-wrap' });
+    zone.parentNode.insertBefore(wrap, zone);
+    const tb = h('div', { class: 'ed-toolbar ed-ui' });
+    const bar = h('div', { class: 'ed-blockbar ed-ui' });
+    wrap.appendChild(h('div', { class: 'ed-note ed-ui', html: '<b>✎ Editing: ' + label + '.</b> Click any text to type. Write formulas in LaTeX between <code>$…$</code> (inline) or <code>$$…$$</code> (display) — they render when you turn Edit mode off. Use the toolbar to add or remove sections.' }));
+    wrap.appendChild(tb); wrap.appendChild(zone); wrap.appendChild(bar);
+    const rec = { zone, wrap, bar, active: null };
+    ZONES.push(rec);
+    const save = () => { onSave(serialize(zone)); touch(); };
+    const cmd = (c, v) => { ensureFocus(zone); document.execCommand('styleWithCSS', false, false); document.execCommand(c, false, v); save(); };
+    const mk = (t, title, fn) => h('button', { type: 'button', title, text: t, onmousedown: e => e.preventDefault(), onclick: fn });
+    const dd = (title, menuClass, items) => {
+      const d = h('details', {}, h('summary', { text: title }), h('div', { class: 'ed-menu ' + menuClass }, items));
+      d.addEventListener('mousedown', e => { if (e.target.tagName === 'BUTTON') e.preventDefault(); });
+      return d;
+    };
+    function insertBlock(html) {
+      ensureFocus(zone);
+      const ref = blockOf(zone);
+      const tmp = document.createElement('div'); tmp.innerHTML = clean(html);
+      const nodes = [...tmp.children]; if (!nodes.length) return;
+      nodes.forEach((n, i) => { if (ref) (i ? nodes[i - 1] : ref).insertAdjacentElement('afterend', n); else zone.appendChild(n); });
+      const first = nodes[0].tagName === 'TABLE' ? (nodes[0].querySelector('td,th') || nodes[0]) : nodes[0]; placeCaret(first, true); setActive(nodes[0]); save();
+      nodes[0].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      tb.querySelectorAll('details[open]').forEach(d => d.open = false);
+    }
+    const ins = (t, k) => h('button', { type: 'button', text: t, onclick: () => insertBlock(TPL[k]()) });
+
+    tb.appendChild(mk('B', 'Bold', () => cmd('bold'))); tb.lastChild.style.fontWeight = '900';
+    tb.appendChild(mk('I', 'Italic', () => cmd('italic'))); tb.lastChild.style.fontStyle = 'italic';
+    tb.appendChild(mk('U', 'Underline', () => cmd('underline'))); tb.lastChild.style.textDecoration = 'underline';
+    tb.appendChild(mk('x₂', 'Subscript', () => cmd('subscript')));
+    tb.appendChild(mk('x²', 'Superscript', () => cmd('superscript')));
+    tb.appendChild(mk('Tx', 'Clear formatting', () => cmd('removeFormat')));
+    tb.appendChild(h('span', { class: 'sep' }));
+    tb.appendChild(mk('• List', 'Bulleted list', () => cmd('insertUnorderedList')));
+    tb.appendChild(mk('1. List', 'Numbered list', () => cmd('insertOrderedList')));
+    tb.appendChild(h('span', { class: 'sep' }));
+    tb.appendChild(mk('↶', 'Undo', () => cmd('undo'))); tb.appendChild(mk('↷', 'Redo', () => cmd('redo')));
+    tb.appendChild(h('span', { class: 'sep' }));
+    tb.appendChild(dd('Ω Symbols', 'sym', SYMS.map(s => h('button', { type: 'button', text: s, onclick: () => { ensureFocus(zone); document.execCommand('insertText', false, s); save(); } }))));
+    tb.appendChild(dd('＋ Add section ▾', '', [
+      ins('Heading', 'heading'), ins('Paragraph', 'para'), ins('Section card (title + text)', 'section'), ins('Definition box', 'def'),
+      ins('Key formula  ($$ … $$)', 'formula'), ins('Key takeaway box', 'takeaway'), ins('Worked example line', 'example'),
+      ins('Bulleted list', 'ul'), ins('Numbered steps', 'ol'),
+      h('button', { type: 'button', text: 'Table…', onclick: () => tableDialog() }),
+      h('button', { type: 'button', text: 'Image (from web address)…', onclick: () => imageDialog() }),
+      ins('Divider line', 'hr')
+    ]));
+    function tableDialog() {
+      const r = h('input', { type: 'number', value: 3, min: 1, max: 20 }), c = h('input', { type: 'number', value: 3, min: 1, max: 10 }), hd = h('input', { type: 'checkbox', checked: true });
+      modal('Insert table', [h('label', {}, 'Rows ', r), h('label', {}, 'Columns ', c), h('label', {}, hd, ' First row is a heading row')], [
+        { t: 'Cancel' }, { t: 'Insert', pri: 1, fn: () => { insertBlock(tableHTML(Math.max(1, +r.value || 3), Math.max(1, +c.value || 3), hd.checked)); } }]);
+    }
+    function imageDialog() {
+      const u = h('input', { type: 'text', placeholder: 'https://…/picture.png' });
+      modal('Insert image', ['Paste the web address of an image (the file is not uploaded; it is linked).', u], [
+        { t: 'Cancel' }, { t: 'Insert', pri: 1, fn: () => { if (!/^https?:\/\//i.test(u.value.trim())) { toast('Please enter a web address starting with https://'); return false; } insertBlock('<p style="text-align:center"><img src="' + enc(u.value.trim()).replace(/"/g, '&quot;') + '" alt="" style="max-width:100%;border-radius:10px"></p>'); } }]);
+    }
+    // table tools (visible only while the cursor is inside a table)
+    const tt = h('span', { class: 'ed-tbl' });
+    const cell = () => { const s = window.getSelection(); if (!s.anchorNode) return null; const el = s.anchorNode.nodeType === 3 ? s.anchorNode.parentNode : s.anchorNode; if (!(el.closest && zone.contains(el))) return null; const c = el.closest('td,th'); if (c) return c; const t = el.closest('table'); return t ? t.querySelector('td,th') : null; };
+    const tbtn = (t, fn) => h('button', { type: 'button', text: t, onmousedown: e => e.preventDefault(), onclick: () => { const c = cell(); if (c) { fn(c); save(); } } });
+    tt.appendChild(h('span', { class: 'sep' }));
+    tt.appendChild(tbtn('+Row', c => { const tr = c.parentNode, n = document.createElement('tr'); for (let k = 0; k < tr.children.length; k++) { const d = document.createElement('td'); d.textContent = 'Text'; n.appendChild(d); } tr.insertAdjacentElement('afterend', n); }));
+    tt.appendChild(tbtn('+Col', c => { const i = c.cellIndex; c.closest('table').querySelectorAll('tr').forEach(tr => { const ref = tr.children[i]; const n = document.createElement(ref ? ref.tagName.toLowerCase() : 'td'); n.textContent = n.tagName === 'TH' ? 'Heading' : 'Text'; if (ref) ref.insertAdjacentElement('afterend', n); else tr.appendChild(n); }); }));
+    tt.appendChild(tbtn('−Row', c => { const t = c.closest('table'); c.parentNode.remove(); if (!t.querySelector('tr')) t.remove(); }));
+    tt.appendChild(tbtn('−Col', c => { const i = c.cellIndex, t = c.closest('table'); t.querySelectorAll('tr').forEach(tr => tr.children[i] && tr.children[i].remove()); if (!t.querySelector('td,th')) t.remove(); }));
+    tt.appendChild(tbtn('🗑 Table', c => c.closest('table').remove()));
+    tb.appendChild(tt);
+
+    // block bar (move / duplicate / delete the section the cursor is in)
+    const bb = (t, title, fn) => h('button', { type: 'button', title, text: t, onmousedown: e => e.preventDefault(), onclick: () => { const b = rec.active; if (b && zone.contains(b)) { fn(b); save(); setActive(rec.active && rec.active.isConnected ? rec.active : null); } } });
+    bar.appendChild(bb('↑', 'Move section up', b => { if (b.previousElementSibling) b.previousElementSibling.insertAdjacentElement('beforebegin', b); }));
+    bar.appendChild(bb('↓', 'Move section down', b => { if (b.nextElementSibling) b.nextElementSibling.insertAdjacentElement('afterend', b); }));
+    bar.appendChild(bb('⧉', 'Duplicate section', b => { const c = b.cloneNode(true); c.classList.remove('ed-active'); b.insertAdjacentElement('afterend', c); rec.active = c; }));
+    bar.appendChild(bb('🗑', 'Delete this section', b => { if (!confirm('Delete this section?')) return; const nx = b.nextElementSibling || b.previousElementSibling; b.remove(); rec.active = nx; }));
+
+    function setActive(b) {
+      zone.querySelectorAll(':scope>.ed-active').forEach(x => { if (x !== b) { x.classList.remove('ed-active'); if (!x.getAttribute('class')) x.removeAttribute('class'); } });
+      rec.active = b || null;
+      if (b) { b.classList.add('ed-active'); const top = b.getBoundingClientRect().top - wrap.getBoundingClientRect().top; bar.style.top = Math.max(40, top - 32) + 'px'; bar.classList.add('show'); }
+      else bar.classList.remove('show');
+    }
+    rec.setActive = setActive; rec.tt = tt; rec.cell = cell;
+    zone.addEventListener('input', () => { save(); if (rec.active) setActive(rec.active); });
+    zone.addEventListener('paste', e => { e.preventDefault(); const t = (e.clipboardData || window.clipboardData).getData('text/plain'); document.execCommand('insertText', false, t); });
+    zone.addEventListener('blur', () => { /* keep active highlight until another block is chosen */ });
+    return rec;
+  }
+  document.addEventListener('selectionchange', () => {
+    ZONES.forEach(rec => {
+      if (!rec.zone.isConnected) return;
+      const b = blockOf(rec.zone);
+      if (b) { if (b !== rec.active) rec.setActive(b); rec.tt.classList.toggle('show', !!rec.cell()); }
+    });
+  });
+
+  /* ───────────── objectives editor ───────────── */
+  function objEditor(n, sec) {
+    const ul = sec.querySelector('ul'); if (!ul) return;
+    const list = () => C.OBJ[n];
+    const save = () => { mod(n).obj = list().slice(); touch(); };
+    function build() {
+      ul.innerHTML = '';
+      list().forEach((t, i) => {
+        const sp = h('span', { class: 'ed-li', contenteditable: 'true', text: dec(t) });
+        sp.addEventListener('input', () => { list()[i] = enc(sp.textContent); save(); });
+        sp.addEventListener('paste', e => { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain').replace(/\s*\n\s*/g, ' ')); });
+        sp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); list().splice(i + 1, 0, ''); save(); build(); ul.children[i + 1].querySelector('.ed-li').focus(); } });
+        const x = h('button', { type: 'button', class: 'ed-x', title: 'Remove this objective', text: '✕', onclick: () => { list().splice(i, 1); save(); build(); } });
+        ul.appendChild(h('li', { style: 'margin:6px 0;font-size:13px' }, sp, x));
+      });
+    }
+    build();
+    sec.insertBefore(h('div', { class: 'ed-note' }, '✎ Editing objectives. Click a line to rewrite it, ✕ removes it, Enter adds a new one.'), ul);
+    ul.insertAdjacentElement('afterend', h('button', { type: 'button', class: 'ed-add', text: '＋ Add objective', onclick: () => { list().push('New learning objective.'); save(); build(); const l = ul.lastChild.querySelector('.ed-li'); l.focus(); placeCaret(l, true); } }));
+  }
+
+  /* ───────────── question editor (guide questions, performance, written test) ───────────── */
+  function qEditor(host, cfg) {
+    const st = { page: 0, q: '' };
+    const L = () => cfg.list();
+    const blank = () => { const o = { q: '', o: ['', '', '', ''], a: 0 }; if (cfg.explain) o.w = ''; if (cfg.topic) { const l = L(); o.m = l.length ? l[l.length - 1].m || 1 : 1; } return o; };
+    const keep = fn => { const y = window.scrollY; fn(); window.scrollTo(0, y); };
+    function card(it, i) {
+      const warns = [];
+      if (it.o.length !== 4) warns.push('⚠ ' + it.o.length + ' choices (courseware standard is 4)');
+      if (!String(it.q).trim() || it.o.some(o => !String(o).trim())) warns.push('⚠ blank question or choice');
+      const hd = h('div', { class: 'hd' }, h('b', { text: 'Question ' + (i + 1) }));
+      if (cfg.topic) {
+        const sel = h('select', { style: 'width:auto' }); MODNAMES.forEach((nm, k) => sel.appendChild(h('option', { value: k + 1, text: 'Topic: M' + (k + 1) + ' ' + nm })));
+        sel.value = it.m || 1; sel.addEventListener('change', () => { it.m = +sel.value; cfg.onChange(); }); hd.appendChild(sel);
+      }
+      const act = (t, title, fn) => h('button', { type: 'button', title, text: t, onclick: fn });
+      hd.appendChild(act('↑', 'Move up', () => { if (i > 0) { keep(() => { L().splice(i - 1, 0, L().splice(i, 1)[0]); cfg.onChange(); draw(); }); } }));
+      hd.appendChild(act('↓', 'Move down', () => { if (i < L().length - 1) { keep(() => { L().splice(i + 1, 0, L().splice(i, 1)[0]); cfg.onChange(); draw(); }); } }));
+      hd.appendChild(act('⧉', 'Duplicate', () => { keep(() => { L().splice(i + 1, 0, copyItem(it)); cfg.onChange(); draw(); }); }));
+      hd.appendChild(act('＋', 'Insert a blank question below', () => { keep(() => { L().splice(i + 1, 0, blank()); cfg.onChange(); draw(); }); }));
+      hd.appendChild(act('🗑', 'Delete question', () => { if (confirm('Delete question ' + (i + 1) + '?')) keep(() => { L().splice(i, 1); cfg.onChange(); draw(); }); }));
+      const q = h('textarea', { rows: 2, value: dec(it.q), placeholder: 'Type the question…' });
+      q.addEventListener('input', () => { it.q = enc(q.value); cfg.onChange(); });
+      const name = 'edq' + Math.random().toString(36).slice(2);
+      const opts = it.o.map((o, j) => {
+        const rad = h('input', { type: 'radio', name, checked: it.a === j, title: 'Mark as the correct answer' });
+        rad.addEventListener('change', () => { it.a = j; cfg.onChange(); });
+        const t = h('input', { type: 'text', value: dec(o), placeholder: 'Choice ' + String.fromCharCode(65 + j) });
+        t.addEventListener('input', () => { it.o[j] = enc(t.value); cfg.onChange(); });
+        const rm = h('button', { type: 'button', class: 'ed-x', text: '✕', title: 'Remove this choice', disabled: it.o.length <= 2, onclick: () => { keep(() => { it.o.splice(j, 1); if (it.r) it.r.splice(j, 1); if (j < it.a) it.a--; else if (j === it.a) it.a = 0; cfg.onChange(); draw(); }); } });
+        const row = h('div', { class: 'opt' }, rad, h('b', { text: String.fromCharCode(65 + j) }), t, rm);
+        if (cfg.explain) {
+          const w = h('input', { type: 'text', class: 'why', value: dec((it.r || [])[j] || ''), placeholder: j === it.a ? '(correct choice — explained below)' : 'Why is this choice wrong? (optional, shown in feedback)', disabled: j === it.a });
+          w.addEventListener('input', () => { it.r = it.r || []; while (it.r.length < it.o.length) it.r.push(''); it.r[j] = enc(w.value); cfg.onChange(); });
+          row.appendChild(w);
+        }
+        return row;
+      });
+      const kids = [hd, h('label', { class: 'l', text: 'Question' }), q, h('label', { class: 'l', text: 'Choices — select the circle of the correct answer' }), ...opts,
+        h('button', { type: 'button', text: '＋ Add choice', disabled: it.o.length >= 6, onclick: () => { keep(() => { it.o.push(''); if (it.r) it.r.push(''); cfg.onChange(); draw(); }); } })];
+      if (cfg.explain) {
+        const w = h('textarea', { rows: 2, value: dec(it.w || ''), placeholder: 'Detailed explanation of the correct answer (shown after the learner answers)…' });
+        w.addEventListener('input', () => { it.w = enc(w.value); cfg.onChange(); });
+        kids.push(h('label', { class: 'l', text: 'Explanation of the correct answer' }), w);
+      }
+      if (warns.length) kids.push(h('div', { class: 'ed-warn', text: warns.join(' · ') }));
+      return h('div', { class: 'ed-card' }, kids);
+    }
+    function draw() {
+      host.innerHTML = '';
+      const root = h('div', { class: 'ed-q' });
+      const all = L(), per = cfg.perPage || 1e9;
+      const match = (it) => !st.q || (dec(it.q) + ' ' + it.o.map(dec).join(' ')).toLowerCase().includes(st.q.toLowerCase());
+      const idx = all.map((_, i) => i).filter(i => match(all[i]));
+      const pages = Math.max(1, Math.ceil(idx.length / per)); st.page = Math.min(st.page, pages - 1);
+      const top = h('div', { class: 'ed-pg' }, h('b', { text: all.length + ' question' + (all.length === 1 ? '' : 's') }));
+      if (cfg.perPage) {
+        const s = h('input', { type: 'text', class: 'ed-search', placeholder: '🔍 Search questions…', value: st.q, style: 'max-width:260px' });
+        s.addEventListener('change', () => { st.q = s.value; st.page = 0; draw(); }); top.appendChild(s);
+      }
+      top.appendChild(h('button', { type: 'button', class: 'ed-add', text: '＋ Add question', onclick: () => { L().push(blank()); cfg.onChange(); st.q = ''; st.page = Math.ceil(L().length / per) - 1; draw(); const c = host.querySelectorAll('.ed-card'); c[c.length - 1] && c[c.length - 1].scrollIntoView({ block: 'center' }); } }));
+      root.appendChild(top);
+      idx.slice(st.page * per, st.page * per + per).forEach(i => root.appendChild(card(all[i], i)));
+      if (!idx.length) root.appendChild(h('p', { class: 'sub', text: 'No questions yet. Press “Add question”.' }));
+      if (pages > 1) {
+        const nav = h('div', { class: 'ed-pg' },
+          h('button', { type: 'button', text: '← Prev', disabled: st.page === 0, onclick: () => { st.page--; draw(); window.scrollTo(0, 0); } }),
+          h('span', { text: 'Page ' + (st.page + 1) + ' of ' + pages }),
+          h('button', { type: 'button', text: 'Next →', disabled: st.page >= pages - 1, onclick: () => { st.page++; draw(); window.scrollTo(0, 0); } }));
+        root.appendChild(nav);
+      }
+      host.appendChild(root);
+    }
+    draw();
+  }
+
+  /* ───────────── per-module decoration (edit mode) ───────────── */
+  function applyVideo(n, id) {
+    const vd = $('vd' + n); if (!vd || !id) return;
+    vd.innerHTML = '<div class="easc-video-wrap"><div class="easc-video-frame"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '?rel=0" title="Module ' + n + ' video lesson" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>';
+  }
+  function videoEditor(n) {
+    const vd = $('vd' + n); if (!vd) return;
+    const inp = h('input', { type: 'text', placeholder: 'Paste a YouTube link, e.g. https://youtu.be/…', style: 'width:min(420px,100%);background:var(--bg2);color:var(--white);border:1px solid var(--line);border-radius:8px;padding:6px 9px' });
+    const box = h('div', { class: 'ed-note' }, '✎ Video lesson: ', inp, ' ', h('button', {
+      type: 'button', text: 'Change video', onclick: () => {
+        const m = inp.value.trim().match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/) || (/^[\w-]{11}$/.test(inp.value.trim()) ? [0, inp.value.trim()] : null);
+        if (!m) { toast('That is not a valid YouTube link.'); return; }
+        mod(n).video = m[1]; touch(); applyVideo(n, m[1]); toast('Video updated.');
+      }
+    }));
+    vd.parentNode.insertBefore(box, vd);
+  }
+  function decorate(n) {
+    ZONES.length = 0;
+    const track = $('pagerTrack' + n); if (!track) return;
+    const [p1, p2, p3, p4] = track.children;
+    // Part I
+    if (p1) objEditor(n, p1);
+    // Part II
+    const ct = $('ct' + n);
+    if (ct) { richZone(ct, 'Content (discussion, definitions, key formulas, tables, examples)', html => { mod(n).content = html; }); videoEditor(n); }
+    // Part III – instructions
+    if (p3) {
+      const ac = $('ac' + n), h3 = p3.querySelector('h3.sub2');
+      if (ac && h3) {
+        const z = h('div', { id: 'ai' + n });
+        let nx = h3.nextSibling; while (nx && nx !== ac) { const t = nx.nextSibling; z.appendChild(nx); nx = t; }
+        ac.parentNode.insertBefore(z, ac);
+        richZone(z, 'Activity instructions', html => { mod(n).act = html; C.ACT[n] = html; });
+        ac.parentNode.insertBefore(h('div', { class: 'ed-note' }, 'The interactive activity below (graphs, sliders, challenge cards) is built into the courseware and cannot be edited here.'), ac);
+      }
+      const gd = $('gd' + n);
+      if (gd && typeof GRAPH_GUIDES !== 'undefined' && GRAPH_GUIDES[n]) {
+        const gl = GRAPH_GUIDES[n].questions.map(q => ({ q: q[0], o: q[2].slice(), a: Math.max(0, q[1].charCodeAt(0) - 97) }));
+        gd.innerHTML = '';
+        gd.appendChild(h('div', { class: 'ed-note' }, '✎ Editing the guide questions of this activity. Select the circle of the correct choice. Feedback with tables and graphs is generated automatically.'));
+        const host = h('div', {}); gd.appendChild(host);
+        qEditor(host, {
+          list: () => gl, onChange: () => {
+            const qs = gl.map(x => [x.q, String.fromCharCode(97 + x.a), x.o.slice()]);
+            GRAPH_GUIDES[n].questions = qs; mod(n).guide = qs.map(q => [q[0], q[1], q[2].slice()]); touch();
+          }
+        });
+      }
+    }
+    // Part IV
+    if (p4) {
+      const wh = $('wh' + n);
+      if (wh) {
+        wh.innerHTML = '';
+        wh.parentNode.querySelectorAll(':scope>p').forEach(p => p.remove());
+        wh.appendChild(h('div', { class: 'ed-note' }, '✎ Editing the performance questions (shown to learners with detailed feedback). Add a reason for each wrong choice to make the feedback richer.'));
+        const host = h('div', {}); wh.appendChild(host);
+        qEditor(host, { list: () => C.WH[n], explain: true, onChange: () => { mod(n).perf = C.WH[n].map(copyItem); touch(); } });
+      }
+    }
+  }
+
+  /* ───────────── hooks: after a module renders ───────────── */
+  let pendingPart = null;
+  function onRender(n) {
+    if (!(n >= 1 && n <= 5)) return;
+    const m = S.modules[n] || {};
+    const ct = $('ct' + n);
+    if (m.content != null && ct) ct.innerHTML = clean(m.content);
+    if (m.video) applyVideo(n, m.video);
+    if (EDIT) decorate(n);
+    if (pendingPart != null && window.EASC_gotoPart) { EASC_gotoPart(n, pendingPart); pendingPart = null; }
+  }
+  function watch() {
+    const host = $('moduleContainer'); if (!host) return;
+    new MutationObserver(ms => {
+      for (const m of ms) for (const a of m.addedNodes) if (a.nodeType === 1 && a.classList.contains('partPager')) { onRender(state.currentModule); return; }
+    }).observe(host, { childList: true });
+  }
+
+  /* ───────────── Written Test ───────────── */
+  let testApplied = false, origG = new Map();
+  const T = () => (window.EASC_dbgTest ? EASC_dbgTest() : []);
+  function fixCounts() {
+    const n = window.EASC_TEST_N; if (n === 150 && !S.test) return;
+    const re = /\b150(?=[- ]item|[- ]multiple|\s*ITEMS)/gi;
+    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const arr = []; while (w.nextNode()) { if (re.test(w.currentNode.nodeValue)) arr.push(w.currentNode); re.lastIndex = 0; }
+    arr.forEach(t => { t.nodeValue = t.nodeValue.replace(re, n); });
+  }
+  function afterTest() {
+    const tests = T();
+    if (!testApplied) {
+      testApplied = true; tests.forEach(it => { if (it.g) origG.set(it.q, it.g); });
+      if (S.test) tests.splice(0, tests.length, ...S.test.map(x => { const o = Object.assign({}, x, { o: x.o.slice() }); const g = origG.get(o.q); if (g) o.g = g; return o; }));
+    }
+    window.EASC_TEST_N = tests.length;
+    if (EDIT) {
+      const c = $('moduleContainer');
+      c.innerHTML = '<section class="easc-part"><h2>WRITTEN TEST — EDITOR</h2></section>';
+      const sec = c.firstChild;
+      sec.appendChild(h('div', { class: 'ed-note' }, '✎ Editing the Written Test (' + tests.length + ' questions). Add, delete, reorder and rewrite questions; select the correct choice; set the topic used in the results table. Turn Edit mode off to preview it as a learner.'));
+      const host = h('div', {}); sec.appendChild(host);
+      qEditor(host, { list: () => tests, explain: true, topic: true, perPage: 10, onChange: () => { S.test = tests.map(copyItem); window.EASC_TEST_N = tests.length; touch(); } });
+      document.querySelector('#moduleView .sub').textContent = 'Editor — ' + tests.length + ' questions';
+    } else if (S.test) { if (window.EASC_testDraw) EASC_testDraw(); }
+    fixCounts();
+  }
+  function hookTest() {
+    const prev = window.openModule;
+    window.openModule = function (n) {
+      const r = prev.apply(this, arguments);
+      if (n === 6) { try { afterTest(); } catch (e) { console.error('[EASC editor]', e); } }
+      return r;
+    };
+  }
+
+  /* ───────────── export ───────────── */
+  function validate() {
+    const bad = [];
+    const chk = (label, it, i) => { if (!String(it.q).trim() || it.o.some(o => !String(o).trim())) bad.push(label + ' #' + (i + 1)); };
+    Object.keys(S.modules).forEach(k => {
+      (S.modules[k].perf || []).forEach((it, i) => chk('Module ' + k + ' performance', it, i));
+      (S.modules[k].guide || []).forEach((q, i) => chk('Module ' + k + ' guide', { q: q[0], o: q[2] }, i));
+    });
+    (S.test || []).forEach((it, i) => chk('Written test', it, i));
+    return bad;
+  }
+  function download(name, text) {
+    const a = h('a', { href: URL.createObjectURL(new Blob([text], { type: 'text/html' })), download: name });
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  function pickSource() {
+    return new Promise(res => {
+      const f = h('input', { type: 'file', accept: '.html,.htm,text/html', style: 'display:block;margin:6px 0' });
+      f.addEventListener('change', () => {
+        const file = f.files[0]; if (!file) return;
+        const r = new FileReader(); r.onload = () => { m.remove(); res(String(r.result)); }; r.readAsText(file);
+      });
+      const m = modal('Choose your original index.html',
+        ['This page cannot read its own source when opened from a file. Select the <b>original index.html</b> (the one you want to update) and the edits will be added to it.', f],
+        [{ t: 'Cancel', fn: () => { res(null); } }]);
+    });
+  }
+  async function getSource() {
+    try {
+      const r = await fetch(location.href.split('#')[0].split('?')[0], { cache: 'no-store' });
+      if (r.ok) { const t = await r.text(); if (t.includes('id="easc-saved"')) return t; }
+    } catch (e) { }
+    return pickSource();
+  }
+  async function exportHTML() {
+    persist();
+    const bad = validate();
+    if (bad.length && !confirm('These items have a blank question or blank choice:\n\n' + bad.slice(0, 12).join('\n') + (bad.length > 12 ? '\n…and ' + (bad.length - 12) + ' more' : '') + '\n\nExport anyway?')) return;
+    const src = await getSource(); if (!src) return;
+    const re = /(<script id="easc-saved" type="application\/json">)[\s\S]*?(<\/script>)/;
+    if (!re.test(src)) { toast('That file does not contain the editor block. Use the index.html that has the editor.'); return; }
+    const json = JSON.stringify(S).replace(/</g, '\\u003c').split(String.fromCharCode(8232)).join('\\u2028').split(String.fromCharCode(8233)).join('\\u2029');
+    download('index.html', src.replace(re, (m, a, b) => a + json + b));
+    EMB = clone(S); persist();
+    toast('Exported index.html — upload it to GitHub to replace the old index.html.');
+  }
+
+  /* ───────────── floating panel ───────────── */
+  function reopen() {
+    const mv = $('moduleView');
+    if (mv && mv.classList.contains('active') && state.currentModule) {
+      const n = state.currentModule;
+      if (n <= 5 && window.PARTIDX && PARTIDX[n] != null) pendingPart = PARTIDX[n];
+      openModule(n);
+    }
+  }
+  function buildPanel() {
+    const p = h('div', { id: 'edPanel' });
+    const head = h('div', { class: 'edp-h', onclick: () => p.classList.toggle('min') }, '✎ EDITOR', h('span', { class: 'dot2' }));
+    const tg = h('button', { type: 'button', class: EDIT ? 'on' : '', text: EDIT ? 'Edit mode: ON' : 'Edit mode: OFF' });
+    tg.onclick = () => { EDIT = !EDIT; tg.className = EDIT ? 'on' : ''; tg.textContent = EDIT ? 'Edit mode: ON' : 'Edit mode: OFF'; reopen(); };
+    const ex = h('button', { type: 'button', class: 'pri', text: '⬇ Export HTML', onclick: exportHTML });
+    const reset = h('button', { type: 'button', text: 'Reset this module', onclick: () => {
+      const mv = $('moduleView'), n = state.currentModule;
+      if (!(mv && mv.classList.contains('active') && n)) { toast('Open a module (or the Written Test) first.'); return; }
+      if (!confirm(n === 6 ? 'Reset the Written Test to the original 150 questions?' : 'Reset Module ' + n + ' to the original content? Your edits to it will be lost.')) return;
+      if (n === 6) delete S.test; else delete S.modules[n];
+      persist(); location.reload();
+    } });
+    const disc = h('button', { type: 'button', text: 'Discard unexported', onclick: () => {
+      if (!confirm('Discard every change since your last export?')) return;
+      try { localStorage.removeItem(LSK); } catch (e) { } location.reload();
+    } });
+    p.appendChild(head);
+    p.appendChild(h('div', { class: 'edp-b' }, tg, ex, h('div', { class: 'row' }, reset, disc), h('div', { class: 'edp-s', id: 'edStatus' }),
+      h('div', { class: 'edp-s', html: '<b>Workflow:</b> open a module → edit → <b>Export HTML</b> → replace <code>index.html</code> in GitHub.' })));
+    document.body.appendChild(p); updDirty();
+    if (restored) toast('Your unexported draft was restored.');
+  }
+
+  /* ───────────── boot ───────────── */
+  function boot() {
+    // keep formulas as plain text inside editing zones
+    if (typeof window.renderMathInElement === 'function' && !window.renderMathInElement.__ed) {
+      const o = window.renderMathInElement;
+      const w = function (el, opts) { opts = Object.assign({}, opts || {}); opts.ignoredClasses = (opts.ignoredClasses || []).concat(['ed-zone', 'ed-li']); return o.call(this, el, opts); };
+      w.__ed = true; window.renderMathInElement = w;
+    }
+    watch(); hookTest();
+    if (EDITOR_ON) buildPanel();
+    fixCounts();
+    // module/test views may be re-rendered later – keep counts right
+    const sv = window.showView; if (S.test) window.showView = function () { const r = sv.apply(this, arguments); setTimeout(fixCounts, 30); return r; };
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 
 </script>
