@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>window.__eascErrs=[];window.addEventListener("error",function(e){window.__eascErrs.push((e.message||"error")+" @"+(e.lineno||"?")+":"+(e.colno||"?")+" "+String(e.filename||"").split("/").pop())});</script>
+<head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>EAS•C — Enhancing Activities in Statistics Courseware</title>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -1710,7 +1710,7 @@ function appendInteractiveGuide(num){
   const data=GRAPH_GUIDES[num]; if(!data) return;
   const host=document.getElementById('moduleContainer'); if(!host) return;
   const wrap=document.createElement('section'); wrap.className='activity guideBlock';
-  wrap.innerHTML=`<h3 style="color:var(--cyan2);margin-top:0">${data.title}</h3><p class="sub">Answer all ${data.questions.length} guide questions. Feedback appears after each choice.</p><div class="guideQuestions"></div>`;
+  wrap.innerHTML=`<h3 style="color:var(--cyan2);margin-top:0">${data.title}</h3><p class="sub">Answer all five guide questions. Feedback appears after each choice.</p><div class="guideQuestions"></div>`;
   const qbox=wrap.querySelector('.guideQuestions');
   data.questions.forEach((q,i)=>{const d=document.createElement('div');d.className='interact';d.innerHTML=`<b>${i+1}. ${q[0]}</b><div class="choices">${q[2].map((o,j)=>`<button type="button" onclick="checkGuideAnswer(${num},${i},${j},this)">${String.fromCharCode(97+j)}) ${o}</button>`).join('')}</div><div id="guideFb_${num}_${i}" class="feedback"></div>`;qbox.appendChild(d)});
   host.appendChild(wrap);
@@ -2018,7 +2018,7 @@ window.EASC_feedback=function(n){const L=String.fromCharCode(97);const row=(q,an
 GRAPH_GUIDES[1]={title:'INTERACTIVE ACTIVITY GUIDE',questions:[['In "μ = 66 vs μ ≠ 66", which statement is H₀?','a',['μ = 66','μ ≠ 66','μ > 66']],['"Increases above 45 kilos" gives which H₁?','b',['μ < 45','μ > 45','μ = 45']],['"Less than 1,200 hours" gives which tail?','c',['Right','Two','Left']],['Which error is rejecting a true H₀?','a',['Type I','Type II','None']],['Which words signal a two-tailed H₁?','b',['greater than','different from','less than']]]};
 GRAPH_GUIDES[3]={title:'INTERACTIVE Z-TEST GUIDE',questions:[['What is compared with μ₀ in the Z statistic?','a',['The sample mean','The sample size','α']],['If |Z| is larger than the critical value, what is the decision?','b',['Fail to reject H₀','Reject H₀','Accept H₀']],['Increasing n while keeping the difference changes SE how?','c',['Increases it','No change','Decreases it']],['What must the conclusion include?','a',['Context of the problem','Only the number','Only α']],['Which is the critical Z for α = 0.05 two-tailed?','b',['1.645','1.96','2.576']]]};
 const VID={3:'vR2LfIhiqLc',4:'mbkamYEAF9M',5:'JkMejZZPyvo'};
-const T={1:'Hypothesis testing',2:'Level of significance',3:'Z-test',4:'Pearson correlation',5:'Scatter plot and regression'};window.EASC_CONTENT={OBJ,DISC,ACT,EX,VID,WH,T};
+const T={1:'Hypothesis testing',2:'Level of significance',3:'Z-test',4:'Pearson correlation',5:'Scatter plot and regression'};window.EASC_CONTENT={OBJ,DISC,ACT,EX,VID,WH,T,GG:GRAPH_GUIDES};
 function part(t,body){return `<section class="easc-part"><h2>${t}</h2>${body}</section>`}
 function reorg(n,c){
 c.style.visibility='hidden';
@@ -2128,7 +2128,7 @@ try{localStorage.setItem(KEY,JSON.stringify(state.progress))}catch(e){}
 const pct=Math.round(done()/5*100);
 const set=(id,h)=>{const e=document.getElementById(id);if(e)e.innerHTML=h};
 set('pgTop',`<div class="progressRow"><span>Overall progress</span><b>${pct}%</b></div>${bar(pct)}<div class="progressRow" style="margin-top:6px"><span>${done()} of 5 modules completed · Written test ${state.progress[6].completed?('passed at '+state.progress[6].score+'%'):(state.progress[6].score?('attempted, '+state.progress[6].score+'%'):'not yet attempted')}</span></div>`);
-set('pgList',NAMES.map((n,i)=>{const p=state.progress[i+1];return `<div class="pgrow"><span>Module ${String(i+1).padStart(2,'0')} — ${n}</span><span style="color:${p.completed?'var(--good)':'var(--muted)'}">${p.completed?'✓ Completed':'In progress'}${p.score?` · ${p.score}%`:''}</span></div>`}).join('')+`<div class="pgrow"><span>Written Test — ${window.EASC_TEST_N||150} items</span><span style="color:${state.progress[6].completed?'var(--good)':'var(--muted)'}">${state.progress[6].completed?'✓ Passed':(state.progress[6].score?'Attempted':'Not started')}${state.progress[6].score?` · ${state.progress[6].score}%`:''}</span></div>`);
+set('pgList',NAMES.map((n,i)=>{const p=state.progress[i+1];return `<div class="pgrow"><span>Module ${String(i+1).padStart(2,'0')} — ${n}</span><span style="color:${p.completed?'var(--good)':'var(--muted)'}">${p.completed?'✓ Completed':'In progress'}${p.score?` · ${p.score}%`:''}</span></div>`}).join('')+`<div class="pgrow"><span>Written Test — 150 items</span><span style="color:${state.progress[6].completed?'var(--good)':'var(--muted)'}">${state.progress[6].completed?'✓ Passed':(state.progress[6].score?'Attempted':'Not started')}${state.progress[6].score?` · ${state.progress[6].score}%`:''}</span></div>`);
 try{renderBadges()}catch(e){}
 const ok=state.progress[6].score>=80;const lock=document.getElementById('certLock'),box=document.getElementById('certBox');
 if(lock&&box){lock.style.display=ok?'none':'block';box.style.display=ok?'block':'none';document.getElementById('certStudentName').textContent=String(state.userName).toUpperCase();document.getElementById('certScore').textContent=state.progress[6].score+'%';document.getElementById('certDate').textContent=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})}
@@ -2432,660 +2432,1217 @@ window.drawSettings=drawSettings;drawSettings();
 })();
 
 </script>
-<!-- EAS•C in-browser editor: saved edits live in the next block. Open the page with ?edit to edit, then use Export HTML. -->
-<script id="easc-saved" type="application/json">{}</script>
-<style id="easc-editor-css">
-/* EAS•C in-browser editor (only active when the page is opened with ?edit) */
-#edPanel{position:fixed;right:14px;bottom:14px;z-index:20000;width:min(300px,calc(100vw - 28px));background:rgba(4,20,46,.96);border:1px solid #39d7ff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.5);color:#effaff;font:13px/1.4 Inter,Segoe UI,Arial,sans-serif}
-#edPanel .edp-h{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;font-weight:800;letter-spacing:.06em;font-size:12px}
-#edPanel .edp-h .dot2{width:9px;height:9px;border-radius:50%;background:#35e78b;margin-left:auto}
-#edPanel.dirty .edp-h .dot2{background:#ffd66b;box-shadow:0 0 8px #ffd66b}
-#edPanel .edp-b{padding:0 12px 12px;display:grid;gap:8px}
-#edPanel.min .edp-b{display:none}
-#edPanel button,.ed-wrap button,.ed-card button,.edModal button,.ed-q button,.ed-pg button,.ed-note button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid rgba(57,215,255,.5);background:rgba(32,200,255,.12);color:#effaff;padding:6px 10px}
-#edPanel button:hover,.ed-wrap button:hover,.ed-card button:hover,.edModal button:hover,.ed-q button:hover,.ed-pg button:hover{background:rgba(32,200,255,.28)}
-#edPanel button.pri,.edModal button.pri{background:linear-gradient(100deg,#08a9ed,#0877ff);border-color:#20c8ff;font-weight:800}
-#edPanel button.on{background:#35e78b;color:#04121f;border-color:#35e78b;font-weight:800}
-#edPanel .edp-s{font-size:11px;color:#9db9d8}
-#edPanel .row{display:flex;gap:8px;flex-wrap:wrap}#edPanel .row>*{flex:1}
-html[data-theme=light] #edPanel{background:#f4f8ff;color:#12203a}html[data-theme=light] #edPanel button{color:#12203a}
-
-.ed-note{margin:0 0 10px;padding:8px 10px;border-radius:10px;border:1px dashed #ffd66b;background:rgba(255,214,107,.08);font-size:12px}
-.ed-wrap{position:relative;margin:6px 0 14px}
-.ed-toolbar{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:6px;margin-bottom:8px;border-radius:10px;background:rgba(3,17,43,.97);border:1px solid rgba(57,215,255,.5)}
-html[data-theme=light] .ed-toolbar{background:#eaf2fc}
-.ed-toolbar button{padding:4px 9px;min-width:30px}
-.ed-toolbar .sep{width:1px;align-self:stretch;background:rgba(57,215,255,.35);margin:0 3px}
-.ed-toolbar details{position:relative}.ed-toolbar summary{list-style:none;cursor:pointer;padding:4px 9px;border-radius:8px;border:1px solid rgba(57,215,255,.5);background:rgba(32,200,255,.12);user-select:none}
-.ed-toolbar summary::-webkit-details-marker{display:none}
-.ed-toolbar details[open]>summary{background:rgba(32,200,255,.35)}
-.ed-menu{position:absolute;left:0;top:calc(100% + 4px);z-index:60;min-width:210px;max-width:84vw;display:grid;gap:4px;padding:8px;border-radius:10px;background:#04142e;border:1px solid #39d7ff;box-shadow:0 10px 30px rgba(0,0,0,.55)}
-html[data-theme=light] .ed-menu{background:#fff}
-.ed-menu.sym{grid-template-columns:repeat(8,1fr);min-width:260px}.ed-menu.sym button{padding:5px 0;text-align:center}
-.ed-menu button{text-align:left}
-.ed-tbl{display:none;gap:4px;align-items:center}.ed-tbl.show{display:contents}
-.ed-zone{outline:1px dashed rgba(57,215,255,.55);outline-offset:6px;border-radius:6px;min-height:60px;padding:2px}
-.ed-zone:focus{outline:2px solid #39d7ff}
-.ed-zone>*{position:relative}
-.ed-zone>.ed-active{box-shadow:0 0 0 2px rgba(255,214,107,.8);border-radius:8px}
-.ed-zone table{border-collapse:collapse}.ed-zone td,.ed-zone th{min-width:40px}
-.ed-blockbar{position:absolute;right:0;z-index:40;display:none;gap:3px;padding:3px;border-radius:8px;background:rgba(3,17,43,.97);border:1px solid #ffd66b}
-.ed-blockbar.show{display:flex}.ed-blockbar button{padding:2px 8px;font-size:12px}
-.ed-li{display:inline-block;min-width:60%;outline:1px dashed rgba(57,215,255,.5);padding:1px 4px;border-radius:4px}
-.ed-x{margin-left:8px;padding:0 7px!important;font-size:11px}
-
-.ed-q{display:grid;gap:12px}
-.ed-card{padding:12px;border-radius:12px;border:1px solid rgba(57,215,255,.4);background:rgba(4,24,50,.55);display:grid;gap:8px}
-.ed-card .hd{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.ed-card .hd b{margin-right:auto;color:var(--cyan2)}
-.ed-card textarea,.ed-card input[type=text],.ed-card select,.ed-search{width:100%;background:rgba(0,0,0,.28);color:var(--white);border:1px solid rgba(57,215,255,.4);border-radius:8px;padding:7px 9px;font:inherit}
-html[data-theme=light] .ed-card textarea,html[data-theme=light] .ed-card input[type=text],html[data-theme=light] .ed-card select,html[data-theme=light] .ed-search{background:#fff;color:#12203a}
-.ed-card textarea{resize:vertical;min-height:54px}
-.ed-card .opt{display:grid;grid-template-columns:auto 22px 1fr auto;gap:6px;align-items:center}
-.ed-card .opt .why{grid-column:2 / -1}
-.ed-card .opt input[type=radio]{accent-color:#35e78b;width:18px;height:18px}
-.ed-card label.l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.ed-warn{color:#ffd66b;font-size:11px}
-.ed-pg{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
-.ed-add{border-style:dashed!important;padding:10px!important}
-.edModal{position:fixed;inset:0;z-index:21000;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:14px}
-.edModal>div{background:#04142e;color:#effaff;border:1px solid #39d7ff;border-radius:14px;padding:18px;max-width:440px;width:100%;display:grid;gap:10px}
-html[data-theme=light] .edModal>div{background:#fff;color:#12203a}
-.edModal input[type=number],.edModal input[type=text]{background:rgba(0,0,0,.28);color:inherit;border:1px solid rgba(57,215,255,.5);border-radius:8px;padding:7px;width:100%}
-#edToast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:22000;background:#04142e;color:#effaff;border:1px solid #39d7ff;border-radius:10px;padding:10px 16px;font-size:13px;max-width:92vw;display:none}
-#edToast.show{display:block}
-
-@media(max-width:700px){#edPanel{bottom:8px;right:8px}}
-</style>
-<script id="easc-editor">
+<script id="easc-baked-content" type="application/json">{"v":1,"exported":"2026-10-03T09:46:28.963Z","modules":{"1":{"objectives":["Illustrate the null and alternative hypotheses","Formula the null and alternative hypotheses of a given problem","Distinguish Type I (α) and Type II (β) errors."],"content_html":"\u003cp>In this lesson, we perform the steps in making decisions and drawing conclusions from the results of the data obtained in \u003ci>hypothesis testing\u003c/i>\u003c/p>\n\u003cp>A \u003cb>hypothesis\u003c/b> is a proposed explanation, assertion, or assumption about a population parameter or about the distribution of a random variable. It is a supposition advanced as a basis for argument. It is tested using statistical methods, generally using experimental samples.\u003c/p>\n\u003cp>\u003cb>STATISTICAL HYPOTHESIS\u003c/b>\u003c/p>\n\u003cp>The question of interest or under test is simplified into two competing contradictory statements: the \u003cb>null hypothesis\u003c/b>, denoted by \u003ci>H₀\u003c/i>, against the \u003cb>alternative hypothesis\u003c/b>, denoted by \u003ci>Hₐ\u003c/i>. These two hypotheses, however, are not treated on an equal basis. Special consideration is given to the null hypothesis because it is the hypothesis to be tested as to whether it should be rejected or not. The alternative hypothesis, from the word itself, will be the choice if the null hypothesis were to be rejected.\u003c/p>\n\u003cp>The \u003cb>null hypothesis (\u003ci>H₀\u003c/i>)\u003c/b>  is a statement of “zero” difference. Here, \u003ci>H₀\u003c/i> assumes that there is no difference between two means (the population mean and the sample mean) or variables being compared.\u003c/p>\n\u003cp>On the other hand, the \u003cb>alternative hypothesis (\u003ci>Hₐ\u003c/i>)\u003c/b> is a statement that assumes there is a significant difference between the two means or variables under test or investigation.\u003c/p>\n\u003cp>The difference between the means or variables being compared is based on the right tail or left tail of the curve, the test is a one-tailed test. It indicates that the data obtained in sampling is either higher or lower than the idealized model data.\u003c/p>","examples":[["Example 1:","The school’s record management claims that the average score of the incoming freshmen during the admission test is 73. The teacher wishes to find out if the claim is true. She tests whether or not there is a significant difference between the batch average and the mean scores of students in her class. What is the appropriate hypothesis to be used in this case?"]],"blocks":{"1:2":{"h":"1s7iizc","html":"\u003cp>In this lesson, we perform the steps in making decisions and drawing conclusions from the results of the data obtained in \u003ci>hypothesis testing\u003c/i>\u003c/p>\n\u003cp>A \u003cb>hypothesis\u003c/b> is a proposed explanation, assertion, or assumption about a population parameter or about the distribution of a random variable. It is a supposition advanced as a basis for argument. It is tested using statistical methods, generally using experimental samples.\u003c/p>\n\u003cp>\u003cb>STATISTICAL HYPOTHESIS\u003c/b>\u003c/p>\n\u003cp>The question of interest or under test is simplified into two competing contradictory statements: the \u003cb>null hypothesis\u003c/b>, denoted by \u003ci>H₀\u003c/i>, against the \u003cb>alternative hypothesis\u003c/b>, denoted by \u003ci>Hₐ\u003c/i>. These two hypotheses, however, are not treated on an equal basis. Special consideration is given to the null hypothesis because it is the hypothesis to be tested as to whether it should be rejected or not. The alternative hypothesis, from the word itself, will be the choice if the null hypothesis were to be rejected.\u003c/p>\n\u003cp>The \u003cb>null hypothesis (\u003ci>H₀\u003c/i>)\u003c/b>  is a statement of “zero” difference. Here, \u003ci>H₀\u003c/i> assumes that there is no difference between two means (the population mean and the sample mean) or variables being compared.\u003c/p>\n\u003cp>On the other hand, the \u003cb>alternative hypothesis (\u003ci>Hₐ\u003c/i>)\u003c/b> is a statement that assumes there is a significant difference between the two means or variables under test or investigation.\u003c/p>\n\u003cp>The difference between the means or variables being compared is based on the right tail or left tail of the curve, the test is a one-tailed test. It indicates that the data obtained in sampling is either higher or lower than the idealized model data.\u003c/p>\u003ch4 style=\"color:var(--cyan2);margin:18px 0 8px;font-size:13px\">Key Formulas &amp; Definitions\u003c/h4>\u003cdiv class=\"math-display\">\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$$H_0:\\text{Null Hypothesis}\\qquad H_a:\\text{Alternative Hypothesis}$$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/div>\u003cdiv class=\"mt-4 p-3 rounded-lg bg-cyan-950/50 border border-cyan-500/20 text-xs text-cyan-200\">\u003cstrong class=\"text-cyan-300\">KEY TAKEAWAY:\u003c/strong> Start with the population claim, identify the parameter, then state the null hypothesis and alternative hypothesis clearly.\u003c/div>\u003cdiv style=\"background:var(--easc-card2);border-color:var(--easc-border)\" class=\"p-5 rounded-xl border space-y-4\">\n                    \u003ch4 style=\"color:var(--easc-accent)\" class=\"font-orbitron font-bold text-sm\">HYPOTHESIS TESTING: DEFINITIONS AND DISCUSSION\u003c/h4>\n                    \u003cp class=\"text-xs leading-relaxed\">\u003cstrong>Hypothesis testing\u003c/strong> is a decision-making process for evaluating claims about a population. It is also physically testing an assumption that we can make about a population. A hypothesis is an assumption or conjecture about a population parameter which may or may not be true.\u003c/p>\n                    \u003cdiv class=\"grid md:grid-cols-2 gap-3\">\n                        \u003cdiv style=\"border-color:var(--easc-border)\" class=\"p-3 rounded-lg border\">\u003cb>Example 1\u003c/b>\u003cp class=\"text-xs mt-1\">Is the mean height of Grade 11 students differ from 66 inches?\u003c/p>\u003c/div>\n                        \u003cdiv style=\"border-color:var(--easc-border)\" class=\"p-3 rounded-lg border\">\u003cb>Example 2\u003c/b>\u003cp class=\"text-xs mt-1\">Is the proportion of senior male students height significantly higher than the senior female students?\u003c/p>\u003c/div>\n                    \u003c/div>\n                    \u003cdiv class=\"grid md:grid-cols-2 gap-3\">\n                        \u003cdiv style=\"background:var(--easc-card);border-color:var(--easc-border)\" class=\"p-4 rounded-xl border\">\n                            \u003ch5 style=\"color:var(--easc-accent)\" class=\"font-orbitron font-bold text-xs\">NULL HYPOTHESIS (H₀)\u003c/h5>\n                            \u003cp class=\"text-xs mt-2 leading-relaxed\">It is the initial claim. It shows no significant difference, no changes happened, no relationship between two parameters. The independent variable has no effect on the dependent variable.\u003c/p>\n                            \u003cp class=\"text-xs mt-2\">\u003cstrong>Symbol used:\u003c/strong> Equality symbol (=)\u003c/p>\n                        \u003c/div>\n                        \u003cdiv style=\"background:var(--easc-card);border-color:var(--easc-border)\" class=\"p-4 rounded-xl border\">\n                            \u003ch5 style=\"color:var(--easc-accent)\" class=\"font-orbitron font-bold text-xs\">ALTERNATIVE HYPOTHESIS (H₁)\u003c/h5>\n                            \u003cp class=\"text-xs mt-2 leading-relaxed\">It shows that there is a significant difference, an effect, change, relationship between a parameter and a specific value. The independent variable has an effect on the dependent variable.\u003c/p>\n                            \u003cp class=\"text-xs mt-2\">\u003cstrong>Symbols used:\u003c/strong> Not equal (≠), greater than (&gt;), or less than (&lt;).\u003c/p>\n                        \u003c/div>\n                    \u003c/div>\n                    \u003cdiv style=\"background:var(--easc-card);border-color:var(--easc-border)\" class=\"p-4 rounded-xl border\">\n                        \u003ch5 style=\"color:var(--easc-accent)\" class=\"font-orbitron font-bold text-xs\">TYPE I AND TYPE II ERROR\u003c/h5>\n                        \u003cdiv class=\"grid md:grid-cols-2 gap-3 mt-2\">\n                            \u003cp class=\"text-xs leading-relaxed\">\u003cstrong>Type I Error (α):\u003c/strong> rejecting the null hypothesis when the null hypothesis is actually true. In simple terms, we conclude that a significant effect or difference exists when there actually is none.\u003c/p>\n                            \u003cp class=\"text-xs leading-relaxed\">\u003cstrong>Type II Error (β):\u003c/strong> failing to reject the null hypothesis when the null hypothesis is actually false. In simple terms, a real effect or difference exists, but the test does not detect sufficient evidence for it.\u003c/p>\n                        \u003c/div>\n                    \u003c/div>\n                \u003c/div>\u003cdiv class=\"p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/40\">\n                        \u003ch4 class=\"font-orbitron font-bold text-cyan-200 text-base mb-3\">\n                            \u003ci class=\"fas fa-th-large text-cyan-400 mr-2\">\u003c/i> Decision Matrix: Type I (\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\alpha$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>) vs Type II (\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\beta$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>) Error\n                        \u003c/h4>\n                        \u003cdiv class=\"grid grid-cols-3 gap-2 text-center text-xs font-orbitron\">\n                            \u003cdiv class=\"p-2 bg-transparent\">\u003c/div>\n                            \u003cdiv class=\"p-2 bg-cyan-950 rounded border border-cyan-500/30 text-cyan-300\">\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_0$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span> is ACTUALLY TRUE\u003c/div>\n                            \u003cdiv class=\"p-2 bg-cyan-950 rounded border border-cyan-500/30 text-cyan-300\">\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_0$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span> is ACTUALLY FALSE\u003c/div>\n\n                            \u003cdiv class=\"p-2 bg-cyan-950 rounded border border-cyan-500/30 text-cyan-300 flex items-center justify-center\">REJECT \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_0$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/div>\n                            \u003cdiv class=\"p-3 bg-red-950/60 rounded border border-red-500/50 text-red-200\">\n                                \u003cdiv class=\"font-bold\">TYPE I ERROR (\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\alpha$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>)\u003c/div>\n                                \u003cdiv class=\"text-[10px] opacity-80\">False Positive\u003c/div>\n                            \u003c/div>\n                            \u003cdiv class=\"p-3 bg-emerald-950/60 rounded border border-emerald-500/50 text-emerald-200\">\n                                \u003cdiv class=\"font-bold\">CORRECT DECISION\u003c/div>\n                                \u003cdiv class=\"text-[10px] opacity-80\">Power (\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$1 - \\beta$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>)\u003c/div>\n                            \u003c/div>\n\n                            \u003cdiv class=\"p-2 bg-cyan-950 rounded border border-cyan-500/30 text-cyan-300 flex items-center justify-center\">FAIL TO REJECT \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_0$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/div>\n                            \u003cdiv class=\"p-3 bg-emerald-950/60 rounded border border-emerald-500/50 text-emerald-200\">\n                                \u003cdiv class=\"font-bold\">CORRECT DECISION\u003c/div>\n                                \u003cdiv class=\"text-[10px] opacity-80\">Confidence (\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$1 - \\alpha$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>)\u003c/div>\n                            \u003c/div>\n                            \u003cdiv class=\"p-3 bg-red-950/60 rounded border border-red-500/50 text-red-200\">\n                                \u003cdiv class=\"font-bold\">TYPE II ERROR (\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\beta$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>)\u003c/div>\n                                \u003cdiv class=\"text-[10px] opacity-80\">False Negative\u003c/div>\n                            \u003c/div>\n                        \u003c/div>\n                    \u003c/div>\u003ch4 style=\"color:var(--cyan2);margin:18px 0 8px;font-size:13px\">\u003cbr>\u003c/h4>\u003cdiv class=\"p-5 rounded-xl bg-cyan-950/40 border border-cyan-500/45 space-y-4\">\n                        \u003ch4 class=\"font-orbitron font-bold text-cyan-200 text-sm flex items-center\">ILLUSTRATIVE EXAMPLES:\u003cbr>\u003c/h4>\n\n                        \n                        \u003cdiv class=\"p-3 rounded-lg bg-cyber-dark border border-cyan-500/30 space-y-2\">\n                            \u003cdiv class=\"font-bold text-xs text-cyan-300\">Problem 1:\u003c/div>\n                            \u003cp class=\"text-xs text-cyan-100 italic\">\"A researcher thinks that if median income of a certain community is increased, then the consumption of meat will also increase. Suppose that the average consumption of meat is 45 kilos per year. State the null and alternative hypotheses.\"\u003c/p>\n                            \u003cdiv class=\"p-2.5 rounded bg-cyan-950/70 border border-cyan-500/30 space-y-1 font-mono text-xs\">\n                                \u003cdiv class=\"text-cyan-200\">\u003cstrong>\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_0$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>:\u003c/strong> \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\mu \\le 45$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span> (or \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\mu = 45$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>)\u003c/div>\n                                \u003cdiv class=\"text-cyan-300\">\u003cstrong>\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_1$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>:\u003c/strong> \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\mu &gt; 45$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span> (Consumption increases)\u003c/div>\n                                \u003cdiv class=\"text-[11px] text-cyan-400/80 font-sans mt-1\">\u003cem>Explanation:\u003c/em> The phrase \"will also increase\" indicates a right-tailed directional test where the parameter is greater than the hypothesized value.\u003c/div>\n                            \u003c/div>\n                        \u003c/div>\n\n                        \n                        \u003cdiv class=\"p-3 rounded-lg bg-cyber-dark border border-cyan-500/30 space-y-2\">\n                            \u003cdiv class=\"font-bold text-xs text-cyan-300\">Problem 2:\u003c/div>\n                            \u003cp class=\"text-xs text-cyan-100 italic\">\"The average grade point average (GPA) of graduating high school seniors is 2.76. A school administrator believes that the GPA of students in the science magnet program is different from 2.76. State the null and alternative hypotheses.\"\u003c/p>\n                            \u003cdiv class=\"p-2.5 rounded bg-cyan-950/70 border border-cyan-500/30 space-y-1 font-mono text-xs\">\n                                \u003cdiv class=\"text-cyan-200\">\u003cstrong>\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_0$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>:\u003c/strong> \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\mu = 2.76$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/div>\n                                \u003cdiv class=\"text-cyan-300\">\u003cstrong>\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_1$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>:\u003c/strong> \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\mu \\neq 2.76$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span> (GPA is different)\u003c/div>\n                                \u003cdiv class=\"text-[11px] text-cyan-400/80 font-sans mt-1\">\u003cem>Explanation:\u003c/em> The keyword \"different from\" denotes a two-tailed test because the GPA can be either higher or lower than 2.76.\u003c/div>\n                            \u003c/div>\n                        \u003c/div>\n\n                        \n                        \u003cdiv class=\"p-3 rounded-lg bg-cyber-dark border border-cyan-500/30 space-y-2\">\n                            \u003cdiv class=\"font-bold text-xs text-cyan-300\">Problem 3:\u003c/div>\n                            \u003cp class=\"text-xs text-cyan-100 italic\">\"A manufacturer of energy-saving light bulbs claims that the average life of these bulbs is 1,200 hours. A consumer advocacy group wants to test if the average life is less than 1,200 hours. State the null and alternative hypotheses.\"\u003c/p>\n                            \u003cdiv class=\"p-2.5 rounded bg-cyan-950/70 border border-cyan-500/30 space-y-1 font-mono text-xs\">\n                                \u003cdiv class=\"text-cyan-200\">\u003cstrong>\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_0$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>:\u003c/strong> \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\mu \\ge 1200$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span> (or \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\mu = 1200$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>)\u003c/div>\n                                \u003cdiv class=\"text-cyan-300\">\u003cstrong>\u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\text{H}_1$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span>:\u003c/strong> \u003cspan>\u003cspan>\u003cspan>\u003cspan>\u003cspan>$\\mu &lt; 1200$\u003c/span>\u003c/span>\u003c/span>\u003c/span>\u003c/span> (Average life is less than 1,200 hours)\u003c/div>\n                                \u003cdiv class=\"text-[11px] text-cyan-400/80 font-sans mt-1\">\u003cem>Explanation:\u003c/em> The phrase \"less than\" indicates a left-tailed directional test.\u003c/div>\n                            \u003c/div>\n                        \u003c/div>\n                    \u003c/div>"},"3:0":{"h":"ppaspp","html":"PART IV. ASSESSMENT"}}},"2":{"blocks":{"3:0":{"h":"ppaspp","html":"PART IV. ASSESSMENT"}}},"3":{"blocks":{"3:0":{"h":"ppaspp","html":"PART IV. ASSESSMENT"}}},"4":{"blocks":{"3:0":{"h":"ppaspp","html":"PART IV. ASSESSMENT"}}},"5":{"blocks":{"3:0":{"h":"ppaspp","html":"PART IV. ASSESSMENT"}}}}}</script>
+<!-- Supabase integration (login, progress sync, teacher tools) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+/* ===== easc-supabase.js (inlined) ===== */
 /* =====================================================================
-   EAS•C in-browser editor
-   ─ Open the courseware with  ?edit  at the end of the address
-     (example:  https://yourname.github.io/yourrepo/?edit  or  index.html?edit)
-   ─ Edit objectives, content (text, tables, definitions, key formulas),
-     activity instructions, guide questions, performance questions and the
-     150-item Written Test, add / remove / reorder sections and questions,
-     then press  "Export HTML"  and replace index.html in GitHub with it.
-   ─ Edits are stored in the <script id="easc-saved"> block of index.html, so
-     the exported file is one self-contained page. Students (no ?edit) never
-     see any editor controls.
+   EAS•C  ⇄  Supabase integration            (easc-supabase.js)
+
+   Student : login → progress is loaded/saved automatically. View-only.
+   Teacher : login, then
+     • LEARNER PROGRESS   – table of every learner (+ CSV export)
+     • ✎ Edit page        – click on any module page and edit its text
+                            directly: objectives, discussion, definitions,
+                            matrix/grid cards, tables, formulas, worked
+                            examples, guided problems, activity text.
+                            Bold / italic / lists / insert table / formulas.
+     • VIDEO & QUESTIONS  – YouTube video, guide questions and performance
+                            questions of Modules 1-5 (structured forms)
+     • ⬇ EXPORT HTML      – downloads a new index.html with all edits baked
+                            in, ready to replace the file on GitHub
+
+   Setup: run supabase_schema.sql, then set the two values below.
+   (Use the anon / public key only — never the service_role key.)
    ===================================================================== */
 (function () {
   'use strict';
-  const LSK = 'EASC_editor_draft_v1';
-  const EDITOR_ON = /[?&]edit(=|&|$)/.test(location.search) || location.hash === '#edit';
+
+  /* ───────────── 1. CONFIG ───────────── */
+  const SUPABASE_URL      = 'https://kfpambnrawqzhxwcomxo.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_2jrHl7Pc1G0MTETc002GUw_I11sqE0_';
+
+  const LEGACY_VIDEO = { 1: '8IxJaU06qJA', 2: 'D3qFmPn1pgM' };   // built-in videos of Modules 1-2
+  const MODULE_NAMES = [
+    'Null & Alternative Hypotheses', 'Level of Significance', 'Hypothesis Testing',
+    'Correlation Analysis', 'Scatter Plot & Regression'
+  ];
+  const LOCAL_KEYS = ['EASC_progress_v4', 'EASC_cert_name'];
+  const EDIT_FIELDS = ['objectives', 'content_html', 'examples', 'video_id', 'activity_html', 'performance', 'guide', 'blocks'];
+
+  // (the tag/marker names are built from pieces so this file never contains
+  //  them as one contiguous string — the exporter searches the page source)
+  const SC = 'scr' + 'ipt';
+  const BAKED_ID = 'easc-baked-content';
+  const MARK = '<!-- Supabase ' + 'integration';
+
+  /* ───────────── 2. HELPERS ───────────── */
   const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const clone = o => JSON.parse(JSON.stringify(o));
-  const enc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const dec = s => { const t = document.createElement('textarea'); t.innerHTML = String(s == null ? '' : s); return t.value; };
-  const clean = h => (window.DOMPurify ? window.DOMPurify.sanitize(String(h == null ? '' : h)) : String(h == null ? '' : h));
-  const MODNAMES = ['Null & Alternative Hypotheses', 'Level of Significance', 'Hypothesis Testing', 'Correlation Analysis', 'Scatter Plot & Regression'];
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const rmath = el => { try { if (typeof window.renderAllMath === 'function') window.renderAllMath(el); } catch (e) { console.warn(e); } };
 
-  function h(tag, props, ...kids) {
-    const e = document.createElement(tag);
-    Object.entries(props || {}).forEach(([k, v]) => {
-      if (k === 'class') e.className = v;
-      else if (k === 'text') e.textContent = v;
-      else if (k === 'html') e.innerHTML = v;
-      else if (k === 'value') e.value = v;
-      else if (k === 'checked') e.checked = !!v;
-      else if (k === 'disabled') e.disabled = !!v;
-      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
-      else e.setAttribute(k, v);
+  function toast(msg, kind) {
+    let t = $('sbToast');
+    if (!t) { t = document.createElement('div'); t.id = 'sbToast'; document.body.appendChild(t); }
+    t.className = 'sb-toast show ' + (kind || '');
+    t.textContent = msg;
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove('show'), 4200);
+  }
+
+  function parseYouTube(v) {
+    v = (v || '').trim();
+    if (!v) return '';
+    if (/^[\w-]{11}$/.test(v)) return v;
+    const m = v.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/);
+    return m ? m[1] : null;
+  }
+
+  /* ---- sanitising (DOMPurify when available, built-in fallback otherwise) ---- */
+  function fallbackSanitize(html) {
+    const t = document.createElement('template');
+    t.innerHTML = html;
+    t.content.querySelectorAll('script,style,iframe,object,embed,link,meta,base,form,input,button,select,textarea,frame,frameset,applet,svg,math').forEach(e => e.remove());
+    t.content.querySelectorAll('*').forEach(e => {
+      [...e.attributes].forEach(a => {
+        const n = a.name.toLowerCase(), v = a.value.replace(/\s+/g, '').toLowerCase();
+        if (n.indexOf('on') === 0 || (/^(href|src|xlink:href|action|formaction)$/.test(n) && /^(javascript|vbscript|data:text\/html)/.test(v))) e.removeAttribute(a.name);
+      });
     });
-    kids.flat().forEach(c => c != null && e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
-    return e;
+    return t.innerHTML;
   }
-
-  /* ───────────── saved content (embedded in the HTML) ───────────── */
-  let EMB = {};
-  try { EMB = JSON.parse(($('easc-saved') || {}).textContent || '{}') || {}; } catch (e) { EMB = {}; }
-  EMB.v = 1; EMB.modules = EMB.modules || {};
-  let S = clone(EMB), restored = false;
-  if (EDITOR_ON) {
-    try { const d = JSON.parse(localStorage.getItem(LSK) || 'null'); if (d && d.data) { S = d.data; restored = JSON.stringify(S) !== JSON.stringify(EMB); } } catch (e) { }
-  }
-  S.v = 1; S.modules = S.modules || {};
-  const mod = n => (S.modules[n] = S.modules[n] || {});
-  window.EASC_TEST_N = S.test ? S.test.length : 150;
-
-  const C = window.EASC_CONTENT;
-  if (!C) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(diagnose, 800)); }
-  const copyItem = it => {
-    const o = { q: it.q, o: it.o.slice(), a: it.a, w: it.w || '' };
-    if (it.r && it.r.some(Boolean)) { o.r = it.o.map((_, i) => it.r[i] || ''); }
-    if (it.s) o.s = it.s;
-    if (it.m != null) o.m = it.m;
-    return o;
+  const TABLE_WRAP = {
+    TABLE: ['<table>', '</table>', 'table'], THEAD: ['<table><thead>', '</thead></table>', 'thead'],
+    TBODY: ['<table><tbody>', '</tbody></table>', 'tbody'], TFOOT: ['<table><tfoot>', '</tfoot></table>', 'tfoot'],
+    TR: ['<table><tbody><tr>', '</tr></tbody></table>', 'tr']
   };
+  // hostTag = tag name of the element whose innerHTML this is (tables need their wrapper to survive parsing)
+  function sanitizeFragment(html, hostTag) {
+    html = String(html == null ? '' : html);
+    const w = TABLE_WRAP[String(hostTag || '').toUpperCase()];
+    const input = w ? w[0] + html + w[1] : html;
+    const out = window.DOMPurify ? window.DOMPurify.sanitize(input) : fallbackSanitize(input);
+    if (!w) return out;
+    const t = document.createElement('template');
+    t.innerHTML = out;
+    const host = t.content.querySelector(w[2]);
+    return host ? host.innerHTML : '';
+  }
+  const clean = h => sanitizeFragment(h, 'DIV');
 
-  /* apply saved data to the live courseware data (runs for everyone) */
-  (function applyData() {
-    if (!C) return;
-    Object.keys(S.modules).forEach(k => {
-      const n = +k, m = S.modules[k]; if (!(n >= 1 && n <= 5)) return;
-      if (m.obj) C.OBJ[n] = m.obj.slice();
-      if (m.act != null) C.ACT[n] = m.act;
-      if (m.perf && C.WH[n]) C.WH[n].splice(0, C.WH[n].length, ...m.perf.map(x => Object.assign({}, x, { o: x.o.slice() })));
-      if (m.guide && typeof GRAPH_GUIDES !== 'undefined' && GRAPH_GUIDES[n]) GRAPH_GUIDES[n].questions = m.guide.map(q => [q[0], q[1], q[2].slice()]);
-    });
-  })();
+  /* ───────────── 3. STYLES ───────────── */
+  const css = `
+  .sb-auth{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;padding:20px;overflow:auto;
+    background:radial-gradient(circle at 50% -10%,#0b3b70 0,#061a3b 40%,#020a1c 100%);color:#effaff;font-family:Inter,Segoe UI,Arial,sans-serif}
+  .sb-auth[hidden]{display:none}
+  .sb-card{width:min(560px,100%);border:1px solid #1670ac;border-radius:26px;padding:34px 34px 28px;
+    background:linear-gradient(135deg,#061a3cf2,#08295af2);box-shadow:0 25px 90px #000a,0 0 45px #00bfff18}
+  .sb-brand{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .sb-brand .mark{width:50px;height:50px;border-radius:15px;background:linear-gradient(135deg,#10caff,#0878ff);display:grid;place-items:center;font-size:26px;font-weight:900}
+  .sb-brand b{font-size:26px;display:block}.sb-brand small{display:block;color:#9db9d8;font-size:10px;letter-spacing:.7px;margin-top:2px}
+  .sb-card h2{margin:0 0 6px;font-size:22px}.sb-card .sb-sub{color:#9db9d8;font-size:13px;margin:0 0 20px;line-height:1.5}
+  .sb-roles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .sb-role{border:1px solid #1d659a;background:#0b2b54;color:#effaff;border-radius:18px;padding:22px 14px;text-align:center;transition:.2s}
+  .sb-role:hover{border-color:#39d7ff;transform:translateY(-3px);box-shadow:0 0 28px #00bfff30}
+  .sb-role span{display:block;font-size:40px;margin-bottom:8px}.sb-role b{display:block;font-size:16px}.sb-role small{display:block;color:#9db9d8;margin-top:6px;font-size:11px;line-height:1.4}
+  .sb-tabs{display:flex;gap:8px;margin:0 0 16px}
+  .sb-tab{flex:1;border:1px solid #1d659a;background:#0b2b54;color:#a9c2dd;border-radius:11px;padding:10px;font-weight:700}
+  .sb-tab.on{background:linear-gradient(100deg,#08a9ed,#0877ff);color:#fff;border-color:transparent}
+  .sb-field{display:block;margin:0 0 12px}.sb-field>span{display:block;font-size:12px;color:#9db9d8;margin-bottom:5px;letter-spacing:.3px}
+  .sb-field input{width:100%;padding:12px 14px;border-radius:11px;border:1px solid #1d659a;background:#041832;color:#effaff;font:inherit}
+  .sb-field input:focus{outline:none;border-color:#39d7ff;box-shadow:0 0 0 3px #20c8ff22}
+  .sb-field small{display:block;color:#7f9cbc;font-size:11px;margin-top:4px}
+  .sb-field[hidden]{display:none}
+  .sb-msg{min-height:20px;margin:6px 0 10px;font-size:13px;line-height:1.5}.sb-msg.err{color:#ff8da1}.sb-msg.ok{color:#5ef0a2}
+  .sb-go{width:100%}.sb-link{background:none;border:0;color:#72e7ff;padding:0;font-size:13px;margin-top:14px}
+  .sb-link:hover{text-decoration:underline}
+  .sb-who{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:.5px;background:#0a5037;color:#7dffb9;margin-left:6px}
+  .sb-who.teacher{background:#5a3d00;color:#ffd66b}
 
-  /* ───────────── draft / dirty ───────────── */
-  let EDIT = EDITOR_ON, tmr = null;
-  const isDirty = () => JSON.stringify(S) !== JSON.stringify(EMB);
-  function persist() {
-    try { localStorage.setItem(LSK, JSON.stringify({ t: Date.now(), data: S })); } catch (e) { }
-    updDirty();
-  }
-  function touch() { clearTimeout(tmr); tmr = setTimeout(persist, 250); const p = $('edPanel'); if (p) p.classList.add('dirty'); }
-  function updDirty() {
-    const p = $('edPanel'); if (!p) return;
-    const d = isDirty(); p.classList.toggle('dirty', d);
-    const s = $('edStatus'); if (s) s.textContent = d ? 'Unexported changes (auto-saved as a draft in this browser).' : 'No unexported changes.';
-  }
-  function toast(msg) {
-    let t = $('edToast'); if (!t) { t = h('div', { id: 'edToast' }); document.body.appendChild(t); }
-    t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 4200);
-  }
-  function modal(title, bodyNodes, buttons) {
-    const m = h('div', { class: 'edModal' }), box = h('div', {});
-    box.appendChild(h('b', { text: title }));
-    [].concat(bodyNodes).forEach(n => box.appendChild(typeof n === 'string' ? h('p', { html: n, style: 'margin:0;font-size:13px' }) : n));
-    const row = h('div', { class: 'row', style: 'display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap' });
-    buttons.forEach(b => row.appendChild(h('button', { class: b.pri ? 'pri' : '', text: b.t, onclick: () => { if (b.fn && b.fn() === false) return; m.remove(); } })));
-    box.appendChild(row); m.appendChild(box); document.body.appendChild(m); return m;
+  #sbChip{position:static!important;margin-top:18px}
+  .sidebar{overflow-y:auto}
+  #sbChip b{display:block;font-size:12px;word-break:break-word}
+  #sbChip .sb-row2{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+  #sbChip button{background:#0b2b54;border:1px solid #1d659a;color:#dff6ff;border-radius:8px;padding:5px 10px;font-size:11px}
+  #sbChip button:hover{border-color:#39d7ff}
+  #sbSync{font-size:10px;color:var(--muted)}
+  .sb-navhead{font-size:10px;letter-spacing:2px;color:var(--cyan2);margin:14px 4px 2px;text-transform:uppercase}
+  body.sb-role-teacher #pgTop,body.sb-role-teacher #dashboard .section:has(#pgList){display:none}
+
+  .sb-toast{position:fixed;right:18px;bottom:18px;z-index:21000;max-width:380px;padding:12px 16px;border-radius:12px;
+    background:#08234a;border:1px solid #17639a;color:#effaff;font-size:13px;box-shadow:0 10px 40px #0008;opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s}
+  .sb-toast.show{opacity:1;transform:none}.sb-toast.ok{border-color:#35e78b}.sb-toast.err{border-color:#ff6482}.sb-toast.warn{border-color:#ffd66b}
+
+  .sb-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 14px}
+  .sb-bar input,.sb-bar select{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--white);font:inherit}
+  .sb-bar input{min-width:220px;flex:1}
+  .sb-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 16px}
+  .sb-stat{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:14px}
+  .sb-stat b{display:block;font-size:26px;color:var(--cyan2)}.sb-stat span{font-size:11px;color:var(--muted);letter-spacing:.6px}
+  .sb-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+  .sb-table{margin:0;min-width:900px}.sb-table th,.sb-table td{text-align:center;white-space:nowrap}
+  .sb-table th:first-child,.sb-table td:first-child{text-align:left}
+  .sb-table small{display:block;color:var(--muted);font-size:11px}
+  .sb-ok{color:var(--good);font-weight:700}.sb-warn{color:var(--gold)}.sb-dim{color:var(--muted)}
+  .sb-pbar{height:8px;min-width:90px;border-radius:99px;background:#102d52;overflow:hidden}.sb-pbar i{display:block;height:100%;background:linear-gradient(90deg,#0ba8ed,#74eaff)}
+
+  /* ---- teacher bar on the module page ---- */
+  .sb-tbar{position:sticky;top:0;z-index:60;margin:0 0 14px;padding:10px 12px;border:1px solid #6a5311;border-radius:14px;
+    background:linear-gradient(135deg,#1d1a0b,#10223f);box-shadow:0 8px 28px #0007}
+  .sb-tbar[hidden],.sb-trow[hidden]{display:none!important}
+  .sb-trow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .sb-trow+.sb-trow{margin-top:8px;padding-top:8px;border-top:1px solid #ffffff18}
+  .sb-tlabel{font-size:11px;letter-spacing:1.5px;color:#ffd66b}
+  .sb-tb{border:1px solid var(--line);background:var(--bg2);color:var(--white);border-radius:8px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}
+  .sb-tb:hover:not(:disabled){border-color:var(--cyan)}.sb-tb:disabled{opacity:.4;cursor:not-allowed}
+  .sb-tb.hot{background:linear-gradient(100deg,#08a9ed,#0877ff);border-color:transparent;color:#fff}
+  .sb-tb.on{background:#7a5a00;border-color:#ffd66b;color:#fff}
+  .sb-sep{width:1px;height:22px;background:#ffffff25;margin:0 4px}
+  .sb-tstat{font-size:12px;color:var(--muted);margin-left:auto}.sb-tstat.dirty{color:#ffd66b;font-weight:700}
+  .sb-hint{font-size:11px;color:var(--muted);flex-basis:100%}
+  .sb-hint code{background:#0003;padding:1px 5px;border-radius:5px}
+  .sb-eb-on{outline:1px dashed rgba(32,200,255,.55);outline-offset:3px;cursor:text;min-height:1em}
+  .sb-eb-on:hover{outline-color:#ffd66b}
+  .sb-eb-on:focus{outline:2px solid var(--cyan);background-color:rgba(32,200,255,.05)}
+  body.sb-editing .answerBox{display:block!important}
+
+  /* ---- form editor (video, guide, performance) ---- */
+  .sb-mtabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+  .sb-mtab{border:1px solid var(--line);background:var(--panel);color:var(--white);border-radius:10px;padding:9px 14px;font-weight:700}
+  .sb-mtab.on{background:linear-gradient(100deg,#08a9ed,#0877ff);color:#fff;border-color:transparent}
+  #sbEdForm textarea,#sbEdForm input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--white);font:inherit;line-height:1.5}
+  #sbEdForm .hint{font-size:12px;color:var(--muted);margin:0 0 8px;line-height:1.5}
+  .sb-item{border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 10px;background:rgba(0,0,0,.12)}
+  .sb-item .sb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:700;font-size:13px}
+  .sb-opt{display:flex;gap:8px;align-items:center;margin:6px 0}.sb-opt input[type=text]{flex:1}
+  .sb-opt input[type=radio]{accent-color:#18c6ff;width:18px;height:18px}
+  .sb-mini{border:1px solid var(--line);background:var(--bg2);color:var(--white);border-radius:8px;padding:6px 10px;font-size:12px}
+  .sb-mini:hover{border-color:var(--cyan)}.sb-mini.danger:hover{border-color:var(--bad);color:var(--bad)}
+  .sb-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;position:sticky;bottom:0;padding:12px 0;background:linear-gradient(transparent,var(--bg) 40%)}
+  .sb-vprev{margin-top:10px;max-width:420px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .sb-vprev iframe{width:100%;height:100%;border:0}
+  @media(max-width:700px){.sb-roles{grid-template-columns:1fr}.sb-stats{grid-template-columns:1fr 1fr}}
+  `;
+  const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  /* ───────────── 4. STATE ───────────── */
+  let sb = null, ME = null, chosenRole = null, authMode = 'signin';
+  const DEFAULTS = {};       // content as shipped in the page (incl. baked/exported edits)
+  const BAKED = {};          // edits baked into this index.html by a previous export
+  const CONTENT_ROWS = {};   // edits stored in Supabase
+  let LEARNERS = [];
+  let EDITING = false, pageDirty = false, formDirty = false, AUTO_EDIT = 0, skippedPatches = 0;
+  const C = () => window.EASC_CONTENT;
+
+  /* ───────────── 5. CONTENT LAYER ───────────── */
+  const ggToModel = g => {
+    g = g || { title: '', questions: [] };
+    return { title: g.title || '', questions: (g.questions || []).map(q => ({ q: q[0], o: clone(q[2] || []), a: Math.max(0, String(q[1] || 'a').charCodeAt(0) - 97) })) };
+  };
+  const modelToGG = m => ({ title: m.title, questions: m.questions.map(x => [x.q, String.fromCharCode(97 + (+x.a || 0)), x.o]) });
+
+  function snapshotDefaults() {
+    const c = C();
+    window.EASC_VID_OVERRIDE = window.EASC_VID_OVERRIDE || {};
+    for (let n = 1; n <= 5; n++) {
+      DEFAULTS[n] = {
+        objectives: clone(c.OBJ[n] || []), content_html: c.DISC[n] || '', examples: clone(c.EX[n] || []),
+        video_id: c.VID[n] || LEGACY_VIDEO[n] || '', activity_html: c.ACT[n] || '',
+        performance: clone(c.WH[n] || []), guide: ggToModel(c.GG && c.GG[n]),
+        _hadVID: Object.prototype.hasOwnProperty.call(c.VID, n), _vidOv: !!window.EASC_VID_OVERRIDE[n]
+      };
+    }
   }
 
-  /* ───────────── math helpers ───────────── */
-  function unrender(root) {
-    root.querySelectorAll('.katex-display').forEach(k => {
-      const a = k.querySelector('annotation[encoding="application/x-tex"]');
-      k.replaceWith(document.createTextNode('$$' + (a ? a.textContent : '') + '$$'));
+  function restoreDefaults(n) {
+    const c = C(), d = DEFAULTS[n];
+    c.OBJ[n] = clone(d.objectives);
+    if (d.content_html) c.DISC[n] = d.content_html; else delete c.DISC[n];
+    c.EX[n] = clone(d.examples);
+    if (d._hadVID) c.VID[n] = d.video_id; else delete c.VID[n];
+    if (d.activity_html) c.ACT[n] = d.activity_html; else delete c.ACT[n];
+    c.WH[n] = clone(d.performance);
+    if (c.GG) c.GG[n] = modelToGG(clone(d.guide));
+    window.EASC_VID_OVERRIDE[n] = d._vidOv;
+  }
+
+  // Applies the data-driven fields of a row (blocks are applied after render, see section 6)
+  function applyRow(n, row) {
+    restoreDefaults(n);
+    if (!row) return;
+    const c = C();
+    if (row.objectives) c.OBJ[n] = row.objectives.map(clean);
+    if (row.content_html != null) c.DISC[n] = clean(row.content_html);
+    if (row.examples) c.EX[n] = row.examples.map(e => [clean(e[0]), clean(e[1])]);
+    if (row.video_id) { c.VID[n] = row.video_id; window.EASC_VID_OVERRIDE[n] = true; }
+    if (row.activity_html != null) c.ACT[n] = clean(row.activity_html);
+    if (row.performance) c.WH[n] = row.performance.map(q => ({ q: clean(q.q), o: (q.o || []).map(clean), a: +q.a || 0, w: clean(q.w || '') }));
+    if (row.guide && row.guide.questions && c.GG) {
+      c.GG[n] = modelToGG({
+        title: clean(row.guide.title || ''),
+        questions: row.guide.questions.map(x => ({ q: clean(x.q), o: (x.o || []).map(clean), a: +x.a || 0 }))
+      });
+    }
+  }
+
+  function readBaked() {
+    const el = $(BAKED_ID);
+    if (!el) return {};
+    try { return (JSON.parse(el.textContent) || {}).modules || {}; }
+    catch (e) { console.warn('[EASC] baked content unreadable:', e); return {}; }
+  }
+
+  async function loadContent() {
+    const { data, error } = await sb.from('module_content').select('*').order('module_no');
+    if (error) { console.warn('[EASC] module_content:', error); toast('Could not load edited lessons — showing the built-in content.', 'warn'); return; }
+    (data || []).forEach(r => { CONTENT_ROWS[r.module_no] = r; applyRow(r.module_no, r); });
+  }
+
+  const effectiveBlocks = n => Object.assign({}, (BAKED[n] || {}).blocks || {}, (CONTENT_ROWS[n] || {}).blocks || {});
+
+  async function upsertRow(n, fields) {
+    const merged = Object.assign({}, CONTENT_ROWS[n] || {}, fields);
+    if (EDIT_FIELDS.every(k => merged[k] == null)) {            // nothing left → remove the row
+      if (CONTENT_ROWS[n]) {
+        const { error } = await sb.from('module_content').delete().eq('module_no', n);
+        if (error) throw error;
+        delete CONTENT_ROWS[n];
+      }
+      return null;
+    }
+    const { data, error } = await sb.from('module_content').upsert(Object.assign({ module_no: n }, fields), { onConflict: 'module_no' }).select().single();
+    if (error) throw error;
+    CONTENT_ROWS[n] = data;
+    return data;
+  }
+
+  /* ───────────── 6. ON-PAGE BLOCKS (the visual editor) ───────────── */
+  // A "block" is a maximal piece of static page content (no inputs/buttons/ids).
+  // Blocks get a stable key + a fingerprint, so edits can be re-applied on every load.
+  const EB_BAD = /^(script|style|select|input|textarea|button|canvas|iframe|video|audio|object|embed|form|svg|math|option|optgroup|template|noscript|link|meta)$/i;
+  const EB_SKIP = '#partPager,.pagerControls,.pagerSteps,.easc-video-wrap,.guideBlock,.comprehensionBlock,.guideQuestions,.interact,.wq,.wfb';
+  const EB_DATAID = /^(vd|gd|wh)\d/;               // video / guide / performance containers → edited in the forms
+  const TBL_HOST = /^(TABLE|THEAD|TBODY|TFOOT|TR)$/;
+
+  const isKatex = el => el.classList && (el.classList.contains('katex') || el.classList.contains('katex-display'));
+  const isSkip = el => el.matches(EB_SKIP) || EB_DATAID.test(el.id || '');
+  function selfUnsafe(el) {
+    if (EB_BAD.test(el.tagName) || isSkip(el)) return true;
+    if (el.id && !/^ct\d$/.test(el.id)) return true;
+    for (const a of el.attributes) if (/^on/i.test(a.name)) return true;
+    return false;
+  }
+  function hasUnsafe(el, memo) {
+    if (isKatex(el)) return false;
+    if (memo.has(el)) return memo.get(el);
+    let r = selfUnsafe(el);
+    if (!r) for (const c of el.children) if (hasUnsafe(c, memo)) { r = true; break; }
+    memo.set(el, r);
+    return r;
+  }
+  function collectBlocks(el, out, memo) {
+    if (isKatex(el) || isSkip(el)) return;
+    if (!hasUnsafe(el, memo)) {
+      if ((el.textContent || '').trim() || el.querySelector('img,table')) out.push(el);
+      return;
+    }
+    for (const c of el.children) collectBlocks(c, out, memo);
+  }
+
+  function unrenderMath(root) {
+    root.querySelectorAll('.katex-display').forEach(d => {
+      const a = d.querySelector('annotation[encoding="application/x-tex"]');
+      if (a) d.replaceWith(document.createTextNode('$$' + a.textContent + '$$'));
     });
     root.querySelectorAll('.katex').forEach(k => {
       const a = k.querySelector('annotation[encoding="application/x-tex"]');
-      k.replaceWith(document.createTextNode('$' + (a ? a.textContent : '') + '$'));
+      if (a) k.replaceWith(document.createTextNode('$' + a.textContent + '$'));
     });
   }
-  function serialize(zone) {
-    const c = zone.cloneNode(true);
-    c.querySelectorAll('.ed-ui').forEach(x => x.remove());
-    unrender(c);
+  function canon(el) {          // render-state independent text of a block (for the fingerprint)
+    const c = el.cloneNode(true);
+    unrenderMath(c);
+    let t = c.textContent.replace(/[\u200b\u00a0]/g, ' ');
+    t = t.replace(/\\\[([\s\S]*?)\\\]/g, (m, x) => '$$' + x + '$$').replace(/\\\(([\s\S]*?)\\\)/g, (m, x) => '$' + x + '$');
+    return t.replace(/\s+/g, ' ').trim();
+  }
+  function hash(s) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    return h.toString(36);
+  }
+
+  function tagModule(tr) {
+    [...tr.children].forEach((sec, pi) => {
+      const out = [], memo = new Map();
+      collectBlocks(sec, out, memo);
+      out.forEach(el => {
+        const path = [];
+        for (let e = el; e !== sec; e = e.parentElement) path.unshift([...e.parentElement.children].indexOf(e));
+        el.setAttribute('data-eb', pi + ':' + path.join('.'));
+        el.setAttribute('data-eh', hash(canon(el)));
+      });
+    });
+  }
+
+  const hostsOf = el => TBL_HOST.test(el.tagName) ? [...el.querySelectorAll('td,th,caption')] : [el];
+
+  function setBlockHtml(el, html) {
+    el.innerHTML = sanitizeFragment(html, el.tagName);
+    rmath(el);
+  }
+  function serializeBlock(el) {
+    const c = el.cloneNode(true);
+    unrenderMath(c);
     c.querySelectorAll('[contenteditable]').forEach(x => x.removeAttribute('contenteditable'));
-    c.querySelectorAll('.ed-active').forEach(x => { x.classList.remove('ed-active'); if (!x.className) x.removeAttribute('class'); });
-    c.querySelectorAll('[style=""]').forEach(x => x.removeAttribute('style'));
-    return c.innerHTML.trim();
+    c.querySelectorAll('[spellcheck]').forEach(x => x.removeAttribute('spellcheck'));
+    c.querySelectorAll('.sb-eb-on').forEach(x => { x.classList.remove('sb-eb-on'); if (!x.getAttribute('class')) x.removeAttribute('class'); });
+    return sanitizeFragment(c.innerHTML, el.tagName);
   }
 
-  /* ───────────── rich-text zones (content, activity instructions) ───────────── */
-  const ZONES = [];
-  const SYMS = ['α', 'β', 'μ', 'σ', 'π', 'ρ', 'χ', 'Σ', '≠', '≤', '≥', '±', '×', '÷', '√', '∞', '₀', '₁', '₂', '²', 'x̄', 'ŷ', 'H₀', 'H₁', 'μ₀', '→', '≈', '°'];
-  const TPL = {
-    heading: () => '<h4 style="color:var(--cyan2);margin:18px 0 8px;font-size:13px">New heading</h4>',
-    para: () => '<p>New paragraph. Click here and type.</p>',
-    section: () => '<div class="p-4 rounded-xl border" style="background:var(--easc-card);border-color:var(--easc-border)"><h5 class="font-orbitron font-bold text-xs" style="color:var(--easc-accent)">NEW SECTION TITLE</h5><p class="text-xs mt-2 leading-relaxed">Write the section text here.</p></div>',
-    def: () => '<div class="p-4 rounded-xl border" style="background:var(--easc-card);border-color:var(--easc-border)"><h5 class="font-orbitron font-bold text-xs" style="color:var(--easc-accent)">DEFINITION</h5><p class="text-xs mt-2 leading-relaxed"><strong>Term:</strong> write the definition here.</p></div>',
-    formula: () => '<div class="math-display">$$ y = mx + b $$</div>',
-    takeaway: () => '<div class="mt-4 p-3 rounded-lg bg-cyan-950/50 border border-cyan-500/20 text-xs text-cyan-200"><strong class="text-cyan-300">KEY TAKEAWAY:</strong> Write the key idea here.</div>',
-    example: () => '<p><b>Example.</b> Describe the worked example here.</p>',
-    ul: () => '<ul style="padding-left:22px;list-style:disc"><li>First point</li><li>Second point</li></ul>',
-    ol: () => '<ol style="padding-left:20px;line-height:1.85"><li><b>First step</b> — describe it.</li><li><b>Second step</b> — describe it.</li></ol>',
-    hr: () => '<hr style="border-color:var(--easc-border);margin:14px 0">'
-  };
-  const tableHTML = (r, c, head) => {
-    let t = '<table class="fbt"><tbody>';
-    for (let i = 0; i < r; i++) {
-      t += '<tr>';
-      for (let j = 0; j < c; j++) t += (head && i === 0) ? '<th>Heading</th>' : '<td>Text</td>';
-      t += '</tr>';
-    }
-    return t + '</tbody></table>';
-  };
-
-  function blockOf(zone) {
-    const s = window.getSelection(); if (!s || !s.anchorNode || !zone.contains(s.anchorNode)) return null;
-    let n = s.anchorNode.nodeType === 3 ? s.anchorNode.parentNode : s.anchorNode;
-    while (n && n.parentNode !== zone) n = n.parentNode;
-    return n && n !== zone ? n : null;
-  }
-  function placeCaret(el, selectAll) {
-    const r = document.createRange(); r.selectNodeContents(el); if (!selectAll) r.collapse(true);
-    const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
-  }
-  function ensureFocus(zone) {
-    const s = window.getSelection();
-    if (s.anchorNode && zone.contains(s.anchorNode)) return;
-    zone.focus(); const r = document.createRange(); r.selectNodeContents(zone); r.collapse(false); s.removeAllRanges(); s.addRange(r);
-  }
-
-  function richZone(zone, label, onSave) {
-    zone.classList.add('ed-zone'); zone.contentEditable = 'true'; zone.spellcheck = true;
-    const wrap = h('div', { class: 'ed-wrap' });
-    zone.parentNode.insertBefore(wrap, zone);
-    const tb = h('div', { class: 'ed-toolbar ed-ui' });
-    const bar = h('div', { class: 'ed-blockbar ed-ui' });
-    wrap.appendChild(h('div', { class: 'ed-note ed-ui', html: '<b>✎ Editing: ' + label + '.</b> Click any text to type. Write formulas in LaTeX between <code>$…$</code> (inline) or <code>$$…$$</code> (display) — they render when you turn Edit mode off. Use the toolbar to add or remove sections.' }));
-    wrap.appendChild(tb); wrap.appendChild(zone); wrap.appendChild(bar);
-    const rec = { zone, wrap, bar, active: null };
-    ZONES.push(rec);
-    const save = () => { onSave(serialize(zone)); touch(); };
-    const cmd = (c, v) => { ensureFocus(zone); document.execCommand('styleWithCSS', false, false); document.execCommand(c, false, v); save(); };
-    const mk = (t, title, fn) => h('button', { type: 'button', title, text: t, onmousedown: e => e.preventDefault(), onclick: fn });
-    const dd = (title, menuClass, items) => {
-      const d = h('details', {}, h('summary', { text: title }), h('div', { class: 'ed-menu ' + menuClass }, items));
-      d.addEventListener('mousedown', e => { if (e.target.tagName === 'BUTTON') e.preventDefault(); });
-      return d;
-    };
-    function insertBlock(html) {
-      ensureFocus(zone);
-      const ref = blockOf(zone);
-      const tmp = document.createElement('div'); tmp.innerHTML = clean(html);
-      const nodes = [...tmp.children]; if (!nodes.length) return;
-      nodes.forEach((n, i) => { if (ref) (i ? nodes[i - 1] : ref).insertAdjacentElement('afterend', n); else zone.appendChild(n); });
-      const first = nodes[0].tagName === 'TABLE' ? (nodes[0].querySelector('td,th') || nodes[0]) : nodes[0]; placeCaret(first, true); setActive(nodes[0]); save();
-      nodes[0].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      tb.querySelectorAll('details[open]').forEach(d => d.open = false);
-    }
-    const ins = (t, k) => h('button', { type: 'button', text: t, onclick: () => insertBlock(TPL[k]()) });
-
-    tb.appendChild(mk('B', 'Bold', () => cmd('bold'))); tb.lastChild.style.fontWeight = '900';
-    tb.appendChild(mk('I', 'Italic', () => cmd('italic'))); tb.lastChild.style.fontStyle = 'italic';
-    tb.appendChild(mk('U', 'Underline', () => cmd('underline'))); tb.lastChild.style.textDecoration = 'underline';
-    tb.appendChild(mk('x₂', 'Subscript', () => cmd('subscript')));
-    tb.appendChild(mk('x²', 'Superscript', () => cmd('superscript')));
-    tb.appendChild(mk('Tx', 'Clear formatting', () => cmd('removeFormat')));
-    tb.appendChild(h('span', { class: 'sep' }));
-    tb.appendChild(mk('• List', 'Bulleted list', () => cmd('insertUnorderedList')));
-    tb.appendChild(mk('1. List', 'Numbered list', () => cmd('insertOrderedList')));
-    tb.appendChild(h('span', { class: 'sep' }));
-    tb.appendChild(mk('↶', 'Undo', () => cmd('undo'))); tb.appendChild(mk('↷', 'Redo', () => cmd('redo')));
-    tb.appendChild(h('span', { class: 'sep' }));
-    tb.appendChild(dd('Ω Symbols', 'sym', SYMS.map(s => h('button', { type: 'button', text: s, onclick: () => { ensureFocus(zone); document.execCommand('insertText', false, s); save(); } }))));
-    tb.appendChild(dd('＋ Add section ▾', '', [
-      ins('Heading', 'heading'), ins('Paragraph', 'para'), ins('Section card (title + text)', 'section'), ins('Definition box', 'def'),
-      ins('Key formula  ($$ … $$)', 'formula'), ins('Key takeaway box', 'takeaway'), ins('Worked example line', 'example'),
-      ins('Bulleted list', 'ul'), ins('Numbered steps', 'ol'),
-      h('button', { type: 'button', text: 'Table…', onclick: () => tableDialog() }),
-      h('button', { type: 'button', text: 'Image (from web address)…', onclick: () => imageDialog() }),
-      ins('Divider line', 'hr')
-    ]));
-    function tableDialog() {
-      const r = h('input', { type: 'number', value: 3, min: 1, max: 20 }), c = h('input', { type: 'number', value: 3, min: 1, max: 10 }), hd = h('input', { type: 'checkbox', checked: true });
-      modal('Insert table', [h('label', {}, 'Rows ', r), h('label', {}, 'Columns ', c), h('label', {}, hd, ' First row is a heading row')], [
-        { t: 'Cancel' }, { t: 'Insert', pri: 1, fn: () => { insertBlock(tableHTML(Math.max(1, +r.value || 3), Math.max(1, +c.value || 3), hd.checked)); } }]);
-    }
-    function imageDialog() {
-      const u = h('input', { type: 'text', placeholder: 'https://…/picture.png' });
-      modal('Insert image', ['Paste the web address of an image (the file is not uploaded; it is linked).', u], [
-        { t: 'Cancel' }, { t: 'Insert', pri: 1, fn: () => { if (!/^https?:\/\//i.test(u.value.trim())) { toast('Please enter a web address starting with https://'); return false; } insertBlock('<p style="text-align:center"><img src="' + enc(u.value.trim()).replace(/"/g, '&quot;') + '" alt="" style="max-width:100%;border-radius:10px"></p>'); } }]);
-    }
-    // table tools (visible only while the cursor is inside a table)
-    const tt = h('span', { class: 'ed-tbl' });
-    const cell = () => { const s = window.getSelection(); if (!s.anchorNode) return null; const el = s.anchorNode.nodeType === 3 ? s.anchorNode.parentNode : s.anchorNode; if (!(el.closest && zone.contains(el))) return null; const c = el.closest('td,th'); if (c) return c; const t = el.closest('table'); return t ? t.querySelector('td,th') : null; };
-    const tbtn = (t, fn) => h('button', { type: 'button', text: t, onmousedown: e => e.preventDefault(), onclick: () => { const c = cell(); if (c) { fn(c); save(); } } });
-    tt.appendChild(h('span', { class: 'sep' }));
-    tt.appendChild(tbtn('+Row', c => { const tr = c.parentNode, n = document.createElement('tr'); for (let k = 0; k < tr.children.length; k++) { const d = document.createElement('td'); d.textContent = 'Text'; n.appendChild(d); } tr.insertAdjacentElement('afterend', n); }));
-    tt.appendChild(tbtn('+Col', c => { const i = c.cellIndex; c.closest('table').querySelectorAll('tr').forEach(tr => { const ref = tr.children[i]; const n = document.createElement(ref ? ref.tagName.toLowerCase() : 'td'); n.textContent = n.tagName === 'TH' ? 'Heading' : 'Text'; if (ref) ref.insertAdjacentElement('afterend', n); else tr.appendChild(n); }); }));
-    tt.appendChild(tbtn('−Row', c => { const t = c.closest('table'); c.parentNode.remove(); if (!t.querySelector('tr')) t.remove(); }));
-    tt.appendChild(tbtn('−Col', c => { const i = c.cellIndex, t = c.closest('table'); t.querySelectorAll('tr').forEach(tr => tr.children[i] && tr.children[i].remove()); if (!t.querySelector('td,th')) t.remove(); }));
-    tt.appendChild(tbtn('🗑 Table', c => c.closest('table').remove()));
-    tb.appendChild(tt);
-
-    // block bar (move / duplicate / delete the section the cursor is in)
-    const bb = (t, title, fn) => h('button', { type: 'button', title, text: t, onmousedown: e => e.preventDefault(), onclick: () => { const b = rec.active; if (b && zone.contains(b)) { fn(b); save(); setActive(rec.active && rec.active.isConnected ? rec.active : null); } } });
-    bar.appendChild(bb('↑', 'Move section up', b => { if (b.previousElementSibling) b.previousElementSibling.insertAdjacentElement('beforebegin', b); }));
-    bar.appendChild(bb('↓', 'Move section down', b => { if (b.nextElementSibling) b.nextElementSibling.insertAdjacentElement('afterend', b); }));
-    bar.appendChild(bb('⧉', 'Duplicate section', b => { const c = b.cloneNode(true); c.classList.remove('ed-active'); b.insertAdjacentElement('afterend', c); rec.active = c; }));
-    bar.appendChild(bb('🗑', 'Delete this section', b => { if (!confirm('Delete this section?')) return; const nx = b.nextElementSibling || b.previousElementSibling; b.remove(); rec.active = nx; }));
-
-    function setActive(b) {
-      zone.querySelectorAll(':scope>.ed-active').forEach(x => { if (x !== b) { x.classList.remove('ed-active'); if (!x.getAttribute('class')) x.removeAttribute('class'); } });
-      rec.active = b || null;
-      if (b) { b.classList.add('ed-active'); const top = b.getBoundingClientRect().top - wrap.getBoundingClientRect().top; bar.style.top = Math.max(40, top - 32) + 'px'; bar.classList.add('show'); }
-      else bar.classList.remove('show');
-    }
-    rec.setActive = setActive; rec.tt = tt; rec.cell = cell;
-    zone.addEventListener('input', () => { save(); if (rec.active) setActive(rec.active); });
-    zone.addEventListener('paste', e => { e.preventDefault(); const t = (e.clipboardData || window.clipboardData).getData('text/plain'); document.execCommand('insertText', false, t); });
-    zone.addEventListener('blur', () => { /* keep active highlight until another block is chosen */ });
-    return rec;
-  }
-  document.addEventListener('selectionchange', () => {
-    ZONES.forEach(rec => {
-      if (!rec.zone.isConnected) return;
-      const b = blockOf(rec.zone);
-      if (b) { if (b !== rec.active) rec.setActive(b); rec.tt.classList.toggle('show', !!rec.cell()); }
+  function applyPatches(n, tr) {
+    const blocks = effectiveBlocks(n);
+    let skipped = 0;
+    tr.querySelectorAll('[data-eb]').forEach(el => {
+      const p = blocks[el.dataset.eb];
+      if (!p) return;
+      if (p.h !== el.dataset.eh) { skipped++; return; }
+      setBlockHtml(el, p.html);
     });
-  });
-
-  /* ───────────── objectives editor ───────────── */
-  function objEditor(n, sec) {
-    const ul = sec.querySelector('ul'); if (!ul) return;
-    const list = () => C.OBJ[n];
-    const save = () => { mod(n).obj = list().slice(); touch(); };
-    function build() {
-      ul.innerHTML = '';
-      list().forEach((t, i) => {
-        const sp = h('span', { class: 'ed-li', contenteditable: 'true', text: dec(t) });
-        sp.addEventListener('input', () => { list()[i] = enc(sp.textContent); save(); });
-        sp.addEventListener('paste', e => { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain').replace(/\s*\n\s*/g, ' ')); });
-        sp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); list().splice(i + 1, 0, ''); save(); build(); ul.children[i + 1].querySelector('.ed-li').focus(); } });
-        const x = h('button', { type: 'button', class: 'ed-x', title: 'Remove this objective', text: '✕', onclick: () => { list().splice(i, 1); save(); build(); } });
-        ul.appendChild(h('li', { style: 'margin:6px 0;font-size:13px' }, sp, x));
-      });
-    }
-    build();
-    sec.insertBefore(h('div', { class: 'ed-note' }, '✎ Editing objectives. Click a line to rewrite it, ✕ removes it, Enter adds a new one.'), ul);
-    ul.insertAdjacentElement('afterend', h('button', { type: 'button', class: 'ed-add', text: '＋ Add objective', onclick: () => { list().push('New learning objective.'); save(); build(); const l = ul.lastChild.querySelector('.ed-li'); l.focus(); placeCaret(l, true); } }));
+    Object.keys(blocks).forEach(k => { if (!tr.querySelector('[data-eb="' + k + '"]')) skipped++; });
+    return skipped;
   }
 
-  /* ───────────── question editor (guide questions, performance, written test) ───────────── */
-  function qEditor(host, cfg) {
-    const st = { page: 0, q: '' };
-    const L = () => cfg.list();
-    const blank = () => { const o = { q: '', o: ['', '', '', ''], a: 0 }; if (cfg.explain) o.w = ''; if (cfg.topic) { const l = L(); o.m = l.length ? l[l.length - 1].m || 1 : 1; } return o; };
-    const keep = fn => { const y = window.scrollY; fn(); window.scrollTo(0, y); };
-    function card(it, i) {
-      const warns = [];
-      if (it.o.length !== 4) warns.push('⚠ ' + it.o.length + ' choices (courseware standard is 4)');
-      if (!String(it.q).trim() || it.o.some(o => !String(o).trim())) warns.push('⚠ blank question or choice');
-      const hd = h('div', { class: 'hd' }, h('b', { text: 'Question ' + (i + 1) }));
-      if (cfg.topic) {
-        const sel = h('select', { style: 'width:auto' }); MODNAMES.forEach((nm, k) => sel.appendChild(h('option', { value: k + 1, text: 'Topic: M' + (k + 1) + ' ' + nm })));
-        sel.value = it.m || 1; sel.addEventListener('change', () => { it.m = +sel.value; cfg.onChange(); }); hd.appendChild(sel);
-      }
-      const act = (t, title, fn) => h('button', { type: 'button', title, text: t, onclick: fn });
-      hd.appendChild(act('↑', 'Move up', () => { if (i > 0) { keep(() => { L().splice(i - 1, 0, L().splice(i, 1)[0]); cfg.onChange(); draw(); }); } }));
-      hd.appendChild(act('↓', 'Move down', () => { if (i < L().length - 1) { keep(() => { L().splice(i + 1, 0, L().splice(i, 1)[0]); cfg.onChange(); draw(); }); } }));
-      hd.appendChild(act('⧉', 'Duplicate', () => { keep(() => { L().splice(i + 1, 0, copyItem(it)); cfg.onChange(); draw(); }); }));
-      hd.appendChild(act('＋', 'Insert a blank question below', () => { keep(() => { L().splice(i + 1, 0, blank()); cfg.onChange(); draw(); }); }));
-      hd.appendChild(act('🗑', 'Delete question', () => { if (confirm('Delete question ' + (i + 1) + '?')) keep(() => { L().splice(i, 1); cfg.onChange(); draw(); }); }));
-      const q = h('textarea', { rows: 2, value: dec(it.q), placeholder: 'Type the question…' });
-      q.addEventListener('input', () => { it.q = enc(q.value); cfg.onChange(); });
-      const name = 'edq' + Math.random().toString(36).slice(2);
-      const opts = it.o.map((o, j) => {
-        const rad = h('input', { type: 'radio', name, checked: it.a === j, title: 'Mark as the correct answer' });
-        rad.addEventListener('change', () => { it.a = j; cfg.onChange(); });
-        const t = h('input', { type: 'text', value: dec(o), placeholder: 'Choice ' + String.fromCharCode(65 + j) });
-        t.addEventListener('input', () => { it.o[j] = enc(t.value); cfg.onChange(); });
-        const rm = h('button', { type: 'button', class: 'ed-x', text: '✕', title: 'Remove this choice', disabled: it.o.length <= 2, onclick: () => { keep(() => { it.o.splice(j, 1); if (it.r) it.r.splice(j, 1); if (j < it.a) it.a--; else if (j === it.a) it.a = 0; cfg.onChange(); draw(); }); } });
-        const row = h('div', { class: 'opt' }, rad, h('b', { text: String.fromCharCode(65 + j) }), t, rm);
-        if (cfg.explain) {
-          const w = h('input', { type: 'text', class: 'why', value: dec((it.r || [])[j] || ''), placeholder: j === it.a ? '(correct choice — explained below)' : 'Why is this choice wrong? (optional, shown in feedback)', disabled: j === it.a });
-          w.addEventListener('input', () => { it.r = it.r || []; while (it.r.length < it.o.length) it.r.push(''); it.r[j] = enc(w.value); cfg.onChange(); });
-          row.appendChild(w);
-        }
-        return row;
-      });
-      const kids = [hd, h('label', { class: 'l', text: 'Question' }), q, h('label', { class: 'l', text: 'Choices — select the circle of the correct answer' }), ...opts,
-        h('button', { type: 'button', text: '＋ Add choice', disabled: it.o.length >= 6, onclick: () => { keep(() => { it.o.push(''); if (it.r) it.r.push(''); cfg.onChange(); draw(); }); } })];
-      if (cfg.explain) {
-        const w = h('textarea', { rows: 2, value: dec(it.w || ''), placeholder: 'Detailed explanation of the correct answer (shown after the learner answers)…' });
-        w.addEventListener('input', () => { it.w = enc(w.value); cfg.onChange(); });
-        kids.push(h('label', { class: 'l', text: 'Explanation of the correct answer' }), w);
-      }
-      if (warns.length) kids.push(h('div', { class: 'ed-warn', text: warns.join(' · ') }));
-      return h('div', { class: 'ed-card' }, kids);
-    }
-    function draw() {
-      host.innerHTML = '';
-      const root = h('div', { class: 'ed-q' });
-      const all = L(), per = cfg.perPage || 1e9;
-      const match = (it) => !st.q || (dec(it.q) + ' ' + it.o.map(dec).join(' ')).toLowerCase().includes(st.q.toLowerCase());
-      const idx = all.map((_, i) => i).filter(i => match(all[i]));
-      const pages = Math.max(1, Math.ceil(idx.length / per)); st.page = Math.min(st.page, pages - 1);
-      const top = h('div', { class: 'ed-pg' }, h('b', { text: all.length + ' question' + (all.length === 1 ? '' : 's') }));
-      if (cfg.perPage) {
-        const s = h('input', { type: 'text', class: 'ed-search', placeholder: '🔍 Search questions…', value: st.q, style: 'max-width:260px' });
-        s.addEventListener('change', () => { st.q = s.value; st.page = 0; draw(); }); top.appendChild(s);
-      }
-      top.appendChild(h('button', { type: 'button', class: 'ed-add', text: '＋ Add question', onclick: () => { L().push(blank()); cfg.onChange(); st.q = ''; st.page = Math.ceil(L().length / per) - 1; draw(); const c = host.querySelectorAll('.ed-card'); c[c.length - 1] && c[c.length - 1].scrollIntoView({ block: 'center' }); } }));
-      root.appendChild(top);
-      idx.slice(st.page * per, st.page * per + per).forEach(i => root.appendChild(card(all[i], i)));
-      if (!idx.length) root.appendChild(h('p', { class: 'sub', text: 'No questions yet. Press “Add question”.' }));
-      if (pages > 1) {
-        const nav = h('div', { class: 'ed-pg' },
-          h('button', { type: 'button', text: '← Prev', disabled: st.page === 0, onclick: () => { st.page--; draw(); window.scrollTo(0, 0); } }),
-          h('span', { text: 'Page ' + (st.page + 1) + ' of ' + pages }),
-          h('button', { type: 'button', text: 'Next →', disabled: st.page >= pages - 1, onclick: () => { st.page++; draw(); window.scrollTo(0, 0); } }));
-        root.appendChild(nav);
-      }
-      host.appendChild(root);
-    }
-    draw();
+  function afterRender(n) {
+    let tries = 0;
+    const iv = setInterval(() => {
+      const tr = $('pagerTrack' + n);
+      if (tr && state.currentModule === n) { clearInterval(iv); processModule(n, tr); }
+      else if (++tries > 70) clearInterval(iv);
+    }, 80);
   }
-
-  /* ───────────── per-module decoration (edit mode) ───────────── */
-  function applyVideo(n, id) {
-    const vd = $('vd' + n); if (!vd || !id) return;
-    vd.innerHTML = '<div class="easc-video-wrap"><div class="easc-video-frame"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '?rel=0" title="Module ' + n + ' video lesson" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>';
-  }
-  function videoEditor(n) {
-    const vd = $('vd' + n); if (!vd) return;
-    const inp = h('input', { type: 'text', placeholder: 'Paste a YouTube link, e.g. https://youtu.be/…', style: 'width:min(420px,100%);background:var(--bg2);color:var(--white);border:1px solid var(--line);border-radius:8px;padding:6px 9px' });
-    const box = h('div', { class: 'ed-note' }, '✎ Video lesson: ', inp, ' ', h('button', {
-      type: 'button', text: 'Change video', onclick: () => {
-        const m = inp.value.trim().match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/) || (/^[\w-]{11}$/.test(inp.value.trim()) ? [0, inp.value.trim()] : null);
-        if (!m) { toast('That is not a valid YouTube link.'); return; }
-        mod(n).video = m[1]; touch(); applyVideo(n, m[1]); toast('Video updated.');
-      }
-    }));
-    vd.parentNode.insertBefore(box, vd);
-  }
-  function decorate(n) {
-    ZONES.length = 0;
-    const track = $('pagerTrack' + n); if (!track) return;
-    const [p1, p2, p3, p4] = track.children;
-    // Part I
-    if (p1) objEditor(n, p1);
-    // Part II
-    const ct = $('ct' + n);
-    if (ct) { richZone(ct, 'Content (discussion, definitions, key formulas, tables, examples)', html => { mod(n).content = html; }); videoEditor(n); }
-    // Part III – instructions
-    if (p3) {
-      const ac = $('ac' + n), h3 = p3.querySelector('h3.sub2');
-      if (ac && h3) {
-        const z = h('div', { id: 'ai' + n });
-        let nx = h3.nextSibling; while (nx && nx !== ac) { const t = nx.nextSibling; z.appendChild(nx); nx = t; }
-        ac.parentNode.insertBefore(z, ac);
-        richZone(z, 'Activity instructions', html => { mod(n).act = html; C.ACT[n] = html; });
-        ac.parentNode.insertBefore(h('div', { class: 'ed-note' }, 'The interactive activity below (graphs, sliders, challenge cards) is built into the courseware and cannot be edited here.'), ac);
-      }
-      const gd = $('gd' + n);
-      if (gd && typeof GRAPH_GUIDES !== 'undefined' && GRAPH_GUIDES[n]) {
-        const gl = GRAPH_GUIDES[n].questions.map(q => ({ q: q[0], o: q[2].slice(), a: Math.max(0, q[1].charCodeAt(0) - 97) }));
-        gd.innerHTML = '';
-        gd.appendChild(h('div', { class: 'ed-note' }, '✎ Editing the guide questions of this activity. Select the circle of the correct choice. Feedback with tables and graphs is generated automatically.'));
-        const host = h('div', {}); gd.appendChild(host);
-        qEditor(host, {
-          list: () => gl, onChange: () => {
-            const qs = gl.map(x => [x.q, String.fromCharCode(97 + x.a), x.o.slice()]);
-            GRAPH_GUIDES[n].questions = qs; mod(n).guide = qs.map(q => [q[0], q[1], q[2].slice()]); touch();
-          }
-        });
-      }
-    }
-    // Part IV
-    if (p4) {
-      const wh = $('wh' + n);
-      if (wh) {
-        wh.innerHTML = '';
-        wh.parentNode.querySelectorAll(':scope>p').forEach(p => p.remove());
-        wh.appendChild(h('div', { class: 'ed-note' }, '✎ Editing the performance questions (shown to learners with detailed feedback). Add a reason for each wrong choice to make the feedback richer.'));
-        const host = h('div', {}); wh.appendChild(host);
-        qEditor(host, { list: () => C.WH[n], explain: true, onChange: () => { mod(n).perf = C.WH[n].map(copyItem); touch(); } });
-      }
+  function processModule(n, tr) {
+    if (tr.dataset.sbTagged) return;
+    tr.dataset.sbTagged = '1';
+    tagModule(tr);
+    skippedPatches = applyPatches(n, tr);
+    if (skippedPatches) console.warn('[EASC] ' + skippedPatches + ' saved edit(s) of Module ' + n + ' no longer match the page and were not applied.');
+    if (ME && ME.role === 'teacher') {
+      updateStatus();
+      if (AUTO_EDIT === n) { AUTO_EDIT = 0; setEditing(true); }
     }
   }
 
-  /* ───────────── hooks: after a module renders ───────────── */
-  let pendingPart = null;
-  function onRender(n) {
-    if (!(n >= 1 && n <= 5)) return;
-    const m = S.modules[n] || {};
-    const ct = $('ct' + n);
-    if (m.content != null && ct) ct.innerHTML = clean(m.content);
-    if (m.video) applyVideo(n, m.video);
-    if (EDIT) decorate(n);
-    if (pendingPart != null && window.EASC_gotoPart) { EASC_gotoPart(n, pendingPart); pendingPart = null; }
-  }
-  function watch() {
-    const host = $('moduleContainer'); if (!host) return;
-    new MutationObserver(ms => {
-      for (const m of ms) for (const a of m.addedNodes) if (a.nodeType === 1 && a.classList.contains('partPager')) { onRender(state.currentModule); return; }
-    }).observe(host, { childList: true });
-  }
-
-  /* ───────────── Written Test ───────────── */
-  let testApplied = false, origG = new Map();
-  const T = () => (window.EASC_dbgTest ? EASC_dbgTest() : []);
-  function fixCounts() {
-    const n = window.EASC_TEST_N; if (n === 150 && !S.test) return;
-    const re = /\b150(?=[- ]item|[- ]multiple|\s*ITEMS)/gi;
-    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    const arr = []; while (w.nextNode()) { if (re.test(w.currentNode.nodeValue)) arr.push(w.currentNode); re.lastIndex = 0; }
-    arr.forEach(t => { t.nodeValue = t.nodeValue.replace(re, n); });
-  }
-  function afterTest() {
-    const tests = T();
-    if (!testApplied) {
-      testApplied = true; tests.forEach(it => { if (it.g) origG.set(it.q, it.g); });
-      if (S.test) tests.splice(0, tests.length, ...S.test.map(x => { const o = Object.assign({}, x, { o: x.o.slice() }); const g = origG.get(o.q); if (g) o.g = g; return o; }));
-    }
-    window.EASC_TEST_N = tests.length;
-    if (EDIT) {
-      const c = $('moduleContainer');
-      c.innerHTML = '<section class="easc-part"><h2>WRITTEN TEST — EDITOR</h2></section>';
-      const sec = c.firstChild;
-      sec.appendChild(h('div', { class: 'ed-note' }, '✎ Editing the Written Test (' + tests.length + ' questions). Add, delete, reorder and rewrite questions; select the correct choice; set the topic used in the results table. Turn Edit mode off to preview it as a learner.'));
-      const host = h('div', {}); sec.appendChild(host);
-      qEditor(host, { list: () => tests, explain: true, topic: true, perPage: 10, onChange: () => { S.test = tests.map(copyItem); window.EASC_TEST_N = tests.length; touch(); } });
-      document.querySelector('#moduleView .sub').textContent = 'Editor — ' + tests.length + ' questions';
-    } else if (S.test) { if (window.EASC_testDraw) EASC_testDraw(); }
-    fixCounts();
-  }
-  function hookTest() {
+  function installModuleHook() {
     const prev = window.openModule;
     window.openModule = function (n) {
+      if (pageDirty && !confirm('You have unsaved edits on this page. Leave without saving?')) return;
+      pageDirty = false; EDITING = false; skippedPatches = 0;
+      document.body.classList.remove('sb-editing');
       const r = prev.apply(this, arguments);
-      if (n === 6) { try { afterTest(); } catch (e) { console.error('[EASC editor]', e); } }
+      if (n >= 1 && n <= 5) afterRender(n);
+      updateBar(n);
       return r;
     };
   }
 
-  /* ───────────── export ───────────── */
-  function validate() {
-    const bad = [];
-    const chk = (label, it, i) => { if (!String(it.q).trim() || it.o.some(o => !String(o).trim())) bad.push(label + ' #' + (i + 1)); };
-    Object.keys(S.modules).forEach(k => {
-      (S.modules[k].perf || []).forEach((it, i) => chk('Module ' + k + ' performance', it, i));
-      (S.modules[k].guide || []).forEach((q, i) => chk('Module ' + k + ' guide', { q: q[0], o: q[2] }, i));
+  /* ───────────── 7. TEACHER BAR + EDIT MODE ───────────── */
+  function setPageDirty(v) { pageDirty = v; updateStatus(); }
+  function updateStatus() {
+    const s = $('sbTstat'), sv = $('sbSavePage');
+    if (!s) return;
+    if (sv) sv.disabled = !pageDirty;
+    if (pageDirty) { s.textContent = '● Unsaved changes'; s.className = 'sb-tstat dirty'; }
+    else if (skippedPatches) { s.textContent = '⚠ ' + skippedPatches + ' saved edit(s) no longer match the page code'; s.className = 'sb-tstat dirty'; }
+    else { s.textContent = EDITING ? 'Click any text to edit it' : ''; s.className = 'sb-tstat'; }
+  }
+
+  function updateBar(n) {
+    const b = $('sbTbar');
+    if (!b) return;
+    b.hidden = !(n >= 1 && n <= 5);
+    $('sbEditToggle').textContent = '✎ Edit page';
+    $('sbEditToggle').classList.remove('on');
+    $('sbFmt').hidden = true;
+    updateStatus();
+  }
+
+  function setEditing(on) {
+    const n = state.currentModule, tr = $('pagerTrack' + n);
+    if (!tr) { toast('The page is still loading — try again in a moment.', 'warn'); return; }
+    EDITING = on;
+    document.body.classList.toggle('sb-editing', on);
+    $('sbEditToggle').textContent = on ? '✔ Done editing' : '✎ Edit page';
+    $('sbEditToggle').classList.toggle('on', on);
+    $('sbFmt').hidden = !on;
+    if (on) { try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {} }
+    tr.querySelectorAll('[data-eb]').forEach(el => {
+      if (on) {
+        unrenderMath(el);
+        hostsOf(el).forEach(h => { h.contentEditable = 'true'; h.classList.add('sb-eb-on'); h.spellcheck = true; });
+      } else {
+        hostsOf(el).forEach(h => { h.removeAttribute('contenteditable'); h.removeAttribute('spellcheck'); h.classList.remove('sb-eb-on'); if (!h.getAttribute('class')) h.removeAttribute('class'); });
+        rmath(el);
+      }
     });
-    (S.test || []).forEach((it, i) => chk('Written test', it, i));
-    return bad;
+    updateStatus();
+    if (on) toast('Edit mode ON — click any text on the page to change it. Use the Parts menu to move between Parts I–IV.', 'ok');
   }
-  function download(name, text) {
-    const a = h('a', { href: URL.createObjectURL(new Blob([text], { type: 'text/html' })), download: name });
-    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+
+  /* ---- selection helpers ---- */
+  function inEditable() {
+    const s = window.getSelection();
+    if (!s || !s.rangeCount) return false;
+    let n = s.anchorNode; if (n && n.nodeType === 3) n = n.parentElement;
+    return !!(n && n.closest && n.closest('.sb-eb-on'));
   }
-  function pickSource() {
-    return new Promise(res => {
-      const f = h('input', { type: 'file', accept: '.html,.htm,text/html', style: 'display:block;margin:6px 0' });
-      f.addEventListener('change', () => {
-        const file = f.files[0]; if (!file) return;
-        const r = new FileReader(); r.onload = () => { m.remove(); res(String(r.result)); }; r.readAsText(file);
-      });
-      const m = modal('Choose your original index.html',
-        ['This page cannot read its own source when opened from a file. Select the <b>original index.html</b> (the one you want to update) and the edits will be added to it.', f],
-        [{ t: 'Cancel', fn: () => { res(null); } }]);
-    });
+  function curCell() {
+    const s = window.getSelection();
+    if (!s || !s.rangeCount) return null;
+    let n = s.anchorNode; if (n && n.nodeType === 3) n = n.parentElement;
+    const cell = n && n.closest && n.closest('td,th');
+    if (!cell) return null;
+    const tbl = cell.closest('table'), blk = tbl && tbl.closest('[data-eb]');
+    return (blk && blk.contains(tbl)) ? cell : null;
   }
-  async function getSource() {
+
+  function fmt(cmd) {
+    if (!inEditable()) { toast('Click inside the text you want to change first.', 'warn'); return; }
+    document.execCommand(cmd, false, null);
+  }
+  function insertFormula() {
+    if (!inEditable()) { toast('Click where the formula should go first.', 'warn'); return; }
+    document.execCommand('insertText', false, '$\\mu = 0$');
+    toast('Formula inserted. Edit the LaTeX between the $ signs (e.g. $\\bar{x}$, $\\sigma^2$).', 'ok');
+  }
+  function insertTable() {
+    if (!inEditable()) { toast('Click where the table should go first.', 'warn'); return; }
+    const r = parseInt(prompt('How many rows (including the header row)?', '4'), 10);
+    const c = parseInt(prompt('How many columns?', '3'), 10);
+    if (!(r >= 1 && r <= 30 && c >= 1 && c <= 12)) return;
+    let h = '<table><thead><tr>';
+    for (let j = 0; j < c; j++) h += '<th>Heading ' + (j + 1) + '</th>';
+    h += '</tr></thead><tbody>';
+    for (let i = 1; i < r; i++) { h += '<tr>'; for (let j = 0; j < c; j++) h += '<td>&nbsp;</td>'; h += '</tr>'; }
+    document.execCommand('insertHTML', false, h + '</tbody></table><p><br></p>');
+  }
+  function tblOp(op) {
+    const cell = curCell();
+    if (!cell) return;
+    const tbl = cell.closest('table'), row = cell.parentElement, blk = tbl.closest('[data-eb]');
+    const mk = tag => {
+      const c = document.createElement(tag); c.innerHTML = '<br>';
+      if (TBL_HOST.test(blk.tagName)) { c.contentEditable = 'true'; c.classList.add('sb-eb-on'); }
+      return c;
+    };
+    if (op === 'rowAfter') {
+      const nr = document.createElement('tr');
+      [...row.cells].forEach(() => nr.appendChild(mk('td')));
+      if (row.parentElement.tagName === 'THEAD') { const tb = tbl.tBodies[0] || tbl.appendChild(document.createElement('tbody')); tb.insertBefore(nr, tb.firstChild); }
+      else row.after(nr);
+    } else if (op === 'rowDel') {
+      if (tbl.rows.length < 2) { toast('A table needs at least one row.', 'warn'); return; }
+      row.remove();
+    } else if (op === 'colAfter') {
+      const idx = cell.cellIndex;
+      [...tbl.rows].forEach(r => { const ref = r.cells[idx], nc = mk(ref && ref.tagName === 'TH' ? 'th' : 'td'); if (ref) ref.after(nc); else r.appendChild(nc); });
+    } else if (op === 'colDel') {
+      if (row.cells.length < 2) { toast('A table needs at least one column.', 'warn'); return; }
+      const idx = cell.cellIndex;
+      [...tbl.rows].forEach(r => { if (r.cells[idx]) r.cells[idx].remove(); });
+    } else if (op === 'tblDel') {
+      if (!confirm('Delete this whole table?')) return;
+      if (tbl === blk) tbl.innerHTML = ''; else tbl.remove();
+    }
+    blk.dataset.sbDirty = '1';
+    setPageDirty(true);
+  }
+
+  /* ---- save / reset of page edits ---- */
+  function dirtyBlocks(n) { const tr = $('pagerTrack' + n); return tr ? [...tr.querySelectorAll('[data-eb][data-sb-dirty]')] : []; }
+  function mergedBlocks(n, includeDirty) {
+    const b = effectiveBlocks(n);
+    if (includeDirty && state.currentModule === n) dirtyBlocks(n).forEach(el => { b[el.dataset.eb] = { h: el.dataset.eh, html: serializeBlock(el) }; });
+    return b;
+  }
+
+  async function savePage() {
+    const n = state.currentModule;
+    if (!(n >= 1 && n <= 5)) return;
+    const dirty = dirtyBlocks(n);
+    if (!dirty.length) { toast('No changes to save.', 'warn'); return; }
+    const btn = $('sbSavePage'); btn.disabled = true;
     try {
-      const r = await fetch(location.href.split('#')[0].split('?')[0], { cache: 'no-store' });
-      if (r.ok) { const t = await r.text(); if (t.includes('id="easc-saved"')) return t; }
-    } catch (e) { }
-    return pickSource();
-  }
-  async function exportHTML() {
-    persist();
-    const bad = validate();
-    if (bad.length && !confirm('These items have a blank question or blank choice:\n\n' + bad.slice(0, 12).join('\n') + (bad.length > 12 ? '\n…and ' + (bad.length - 12) + ' more' : '') + '\n\nExport anyway?')) return;
-    const src = await getSource(); if (!src) return;
-    const re = /(<script id="easc-saved" type="application\/json">)[\s\S]*?(<\/script>)/;
-    if (!re.test(src)) { toast('That file does not contain the editor block. Use the index.html that has the editor.'); return; }
-    const json = JSON.stringify(S).replace(/</g, '\\u003c').split(String.fromCharCode(8232)).join('\\u2028').split(String.fromCharCode(8233)).join('\\u2029');
-    download('index.html', src.replace(re, (m, a, b) => a + json + b));
-    EMB = clone(S); persist();
-    toast('Exported index.html — upload it to GitHub to replace the old index.html.');
-  }
-
-  /* ───────────── floating panel ───────────── */
-  function reopen() {
-    const mv = $('moduleView');
-    if (mv && mv.classList.contains('active') && state.currentModule) {
-      const n = state.currentModule;
-      if (n <= 5 && window.PARTIDX && PARTIDX[n] != null) pendingPart = PARTIDX[n];
-      openModule(n);
+      const all = mergedBlocks(n, true), baked = (BAKED[n] || {}).blocks || {}, rowBlocks = {};
+      Object.keys(all).forEach(k => { if (!(baked[k] && baked[k].html === all[k].html && baked[k].h === all[k].h)) rowBlocks[k] = all[k]; });
+      await upsertRow(n, { blocks: Object.keys(rowBlocks).length ? rowBlocks : null });
+      dirty.forEach(el => el.removeAttribute('data-sb-dirty'));
+      setPageDirty(false);
+      toast('Module ' + n + ' saved ✓ — learners see it the next time they open the module.', 'ok');
+    } catch (e) {
+      console.warn('[EASC] save page:', e);
+      toast('Save failed: ' + (e.message || e), 'err');
+      btn.disabled = false;
     }
   }
-  function buildPanel() {
-    const p = h('div', { id: 'edPanel' });
-    const head = h('div', { class: 'edp-h', onclick: () => p.classList.toggle('min') }, '✎ EDITOR', h('span', { class: 'dot2' }));
-    const tg = h('button', { type: 'button', class: EDIT ? 'on' : '', text: EDIT ? 'Edit mode: ON' : 'Edit mode: OFF' });
-    tg.onclick = () => { EDIT = !EDIT; tg.className = EDIT ? 'on' : ''; tg.textContent = EDIT ? 'Edit mode: ON' : 'Edit mode: OFF'; reopen(); };
-    const ex = h('button', { type: 'button', class: 'pri', text: '⬇ Export HTML', onclick: exportHTML });
-    const reset = h('button', { type: 'button', text: 'Reset this module', onclick: () => {
-      const mv = $('moduleView'), n = state.currentModule;
-      if (!(mv && mv.classList.contains('active') && n)) { toast('Open a module (or the Written Test) first.'); return; }
-      if (!confirm(n === 6 ? 'Reset the Written Test to the original 150 questions?' : 'Reset Module ' + n + ' to the original content? Your edits to it will be lost.')) return;
-      if (n === 6) delete S.test; else delete S.modules[n];
-      persist(); location.reload();
-    } });
-    const disc = h('button', { type: 'button', text: 'Discard unexported', onclick: () => {
-      if (!confirm('Discard every change since your last export?')) return;
-      try { localStorage.removeItem(LSK); } catch (e) { } location.reload();
-    } });
-    p.appendChild(head);
-    p.appendChild(h('div', { class: 'edp-b' }, tg, ex, h('div', { class: 'row' }, reset, disc), h('div', { class: 'edp-s', id: 'edStatus' }),
-      h('div', { class: 'edp-s', html: '<b>Workflow:</b> open a module → edit → <b>Export HTML</b> → replace <code>index.html</code> in GitHub.' })));
-    document.body.appendChild(p); updDirty();
-    if (restored) toast('Your unexported draft was restored.');
+
+  async function resetModule(n) {
+    if (!confirm('Remove ALL saved edits of Module ' + n + ' (text, video, questions) and go back to the version shipped in the page?')) return;
+    try {
+      await upsertRow(n, EDIT_FIELDS.reduce((o, k) => (o[k] = null, o), {}));
+      applyRow(n, null);
+      pageDirty = false; formDirty = false;
+      toast('Module ' + n + ' reset.', 'ok');
+      if (state.currentModule === n && $('pagerTrack' + n)) window.openModule(n);
+      if ($('sbEditor') && $('sbEditor').classList.contains('active')) renderEditor(n);
+    } catch (e) { toast('Reset failed: ' + (e.message || e), 'err'); }
   }
 
-  
-  /* diagnostics: if the courseware data failed to load, show why */
-  function diagnose() {
-    if ((window.EASC_CONTENT && typeof state !== 'undefined') || diagnose.done) return;
-    diagnose.done = true;
-    const errs = (window.__eascErrs || []).slice(0, 6).map(e => '• ' + e).join('\n') || '(no script error was recorded)';
-    const d = document.createElement('pre');
-    d.style.cssText = 'position:fixed;left:8px;right:8px;top:8px;z-index:30000;background:#3a0014;color:#fff;border:2px solid #ff6482;border-radius:10px;padding:12px;font:12px/1.4 monospace;white-space:pre-wrap;max-height:60vh;overflow:auto';
-    d.textContent = 'EAS•C DIAGNOSTIC — courseware data did not load\nEASC_CONTENT: ' + typeof window.EASC_CONTENT + '   state: ' + (typeof state) + '\nPage: ' + location.href + '\nBrowser: ' + navigator.userAgent + '\nErrors:\n' + errs + '\n\nSend a screenshot of this box.';
+  /* ---- build the teacher bar ---- */
+  function buildTeacherBar() {
+    const shell = document.querySelector('#moduleView .moduleShell');
+    if (!shell || $('sbTbar')) return;
+    shell.insertAdjacentHTML('afterbegin', `
+    <div class="sb-tbar" id="sbTbar" hidden>
+      <div class="sb-trow">
+        <b class="sb-tlabel">TEACHER</b>
+        <button type="button" class="sb-tb hot" id="sbEditToggle">✎ Edit page</button>
+        <button type="button" class="sb-tb" id="sbSavePage" disabled>💾 Save</button>
+        <button type="button" class="sb-tb" id="sbVidQ">🎞 Video &amp; questions</button>
+        <button type="button" class="sb-tb" id="sbExportBtn">⬇ Export HTML</button>
+        <button type="button" class="sb-tb" id="sbResetBtn">↺ Reset module</button>
+        <span class="sb-tstat" id="sbTstat"></span>
+      </div>
+      <div class="sb-trow" id="sbFmt" hidden>
+        <button type="button" class="sb-tb" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button type="button" class="sb-tb" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button type="button" class="sb-tb" data-cmd="underline" title="Underline"><u>U</u></button>
+        <button type="button" class="sb-tb" data-cmd="insertUnorderedList" title="Bulleted list">• List</button>
+        <button type="button" class="sb-tb" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+        <button type="button" class="sb-tb" data-cmd="subscript" title="Subscript">x₂</button>
+        <button type="button" class="sb-tb" data-cmd="superscript" title="Superscript">x²</button>
+        <button type="button" class="sb-tb" data-cmd="removeFormat" title="Clear formatting">Tx</button>
+        <span class="sb-sep"></span>
+        <button type="button" class="sb-tb" id="sbFormula" title="Insert a formula">∑ Formula</button>
+        <button type="button" class="sb-tb" id="sbTbl" title="Insert a table">▦ Insert table</button>
+        <span class="sb-sep"></span>
+        <button type="button" class="sb-tb" data-tbl="rowAfter" disabled>＋ Row</button>
+        <button type="button" class="sb-tb" data-tbl="rowDel" disabled>－ Row</button>
+        <button type="button" class="sb-tb" data-tbl="colAfter" disabled>＋ Col</button>
+        <button type="button" class="sb-tb" data-tbl="colDel" disabled>－ Col</button>
+        <button type="button" class="sb-tb" data-tbl="tblDel" disabled>✕ Table</button>
+        <span class="sb-hint">Formulas use LaTeX between dollar signs, e.g. <code>$\\mu = 45$</code>, <code>$\\bar{x}$</code>. The row/column buttons work when the cursor is inside a table. The video, guide questions and performance questions are edited under “Video &amp; questions”.</span>
+      </div>
+    </div>`);
+
+    $('sbEditToggle').addEventListener('click', () => setEditing(!EDITING));
+    $('sbSavePage').addEventListener('click', savePage);
+    $('sbVidQ').addEventListener('click', () => openEditor(state.currentModule));
+    $('sbExportBtn').addEventListener('click', exportHtml);
+    $('sbResetBtn').addEventListener('click', () => resetModule(state.currentModule));
+    $('sbFmt').addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });   // keep the text selection
+    $('sbFmt').addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.cmd) fmt(b.dataset.cmd);
+      else if (b.dataset.tbl) tblOp(b.dataset.tbl);
+      else if (b.id === 'sbFormula') insertFormula();
+      else if (b.id === 'sbTbl') insertTable();
+    });
+
+    const mc = $('moduleContainer');
+    mc.addEventListener('input', e => {
+      if (!EDITING) return;
+      const blk = e.target.closest && e.target.closest('[data-eb]');
+      if (blk) { blk.dataset.sbDirty = '1'; setPageDirty(true); }
+    });
+    mc.addEventListener('paste', e => {                         // paste as plain text (no Word/web junk)
+      if (!EDITING || !(e.target.closest && e.target.closest('.sb-eb-on'))) return;
+      e.preventDefault();
+      document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+    });
+    ['drop', 'dragover'].forEach(t => mc.addEventListener(t, e => { if (EDITING && e.target.closest && e.target.closest('.sb-eb-on')) e.preventDefault(); }));
+    document.addEventListener('selectionchange', () => {
+      if (!EDITING) return;
+      const c = !!curCell();
+      document.querySelectorAll('#sbFmt [data-tbl]').forEach(b => { b.disabled = !c; });
+    });
+    window.addEventListener('beforeunload', e => { if (pageDirty || formDirty) { e.preventDefault(); e.returnValue = ''; } });
+  }
+
+  /* ───────────── 8. FORM EDITOR (video · guide · performance) ───────────── */
+  let edModule = 1;
+  const markFormDirty = () => { formDirty = true; };
+
+  function effective(n) {
+    const d = DEFAULTS[n], r = CONTENT_ROWS[n] || {};
+    return {
+      video_id: r.video_id != null ? r.video_id : d.video_id,
+      guide: clone(r.guide != null ? r.guide : d.guide),
+      performance: clone(r.performance != null ? r.performance : d.performance)
+    };
+  }
+
+  function openEditor(n, btn) {
+    if (n == null) n = edModule;
+    if (formDirty && $('sbEditor').classList.contains('active') && n !== edModule && !confirm('Discard your unsaved changes to Module ' + edModule + '?')) n = edModule;
+    showView('sbEditor', btn || $('sbNavEdit'));
+    renderEditor(n);
+  }
+
+  function renderEditor(n) {
+    edModule = n; formDirty = false;
+    $('sbMTabs').innerHTML = [1, 2, 3, 4, 5].map(i =>
+      `<button type="button" class="sb-mtab ${i === n ? 'on' : ''}" data-n="${i}">Module ${String(i).padStart(2, '0')}</button>`).join('');
+    $('sbMTabs').querySelectorAll('.sb-mtab').forEach(b => b.addEventListener('click', () => openEditor(+b.dataset.n)));
+
+    const edited = !!(CONTENT_ROWS[n] || BAKED[n]);
+    $('sbEdForm').innerHTML = `
+      <section class="easc-part"><h2>MODULE ${String(n).padStart(2, '0')} — ${esc(MODULE_NAMES[n - 1].toUpperCase())}
+        ${edited ? '<span class="sb-who teacher" style="margin-left:10px">CUSTOMISED</span>' : '<span class="sb-who" style="margin-left:10px">BUILT-IN CONTENT</span>'}</h2>
+        <p class="hint">Lesson text, discussions, definitions, tables, formulas, worked examples and activity text are edited <b>directly on the module page</b>.</p>
+        <button type="button" class="btn" id="edOpenPage">✎ Open Module ${n} and edit the page →</button></section>
+
+      <section class="easc-part"><h2>PART II — VIDEO LESSON (YouTube)</h2>
+        <p class="hint">Paste a YouTube link or the 11-character video ID.</p>
+        <input type="text" id="edVid" placeholder="https://www.youtube.com/watch?v=…"><div id="edVidPrev"></div></section>
+
+      <section class="easc-part"><h2>PART III — GUIDE QUESTIONS</h2>
+        <p class="hint">Select the radio button next to the correct choice.</p>
+        <input type="text" id="edGTitle" placeholder="Guide title" style="margin-bottom:10px">
+        <div id="edG"></div><button type="button" class="sb-mini" id="edAddG">＋ Add guide question</button></section>
+
+      <section class="easc-part"><h2>PART IV — PERFORMANCE QUESTIONS</h2>
+        <p class="hint">Select the radio button next to the correct choice. Learners see the questions in this order.</p>
+        <div id="edQ"></div><button type="button" class="sb-mini" id="edAddQ">＋ Add question</button></section>
+
+      <div class="sb-actions">
+        <button type="button" class="btn" id="edSave">💾 Save to Supabase</button>
+        <button type="button" class="btn secondary" id="edPreview">👁 Preview (unsaved)</button>
+        <button type="button" class="btn secondary" id="edReset">↺ Reset module</button>
+        <button type="button" class="btn secondary" id="edExport">⬇ Export HTML</button>
+      </div>`;
+
+    const v = effective(n);
+    $('edVid').value = v.video_id;
+    $('edGTitle').value = v.guide.title;
+    renderQList('edG', v.guide.questions, { explain: false, label: 'Guide question' });
+    renderQList('edQ', v.performance, { explain: true, label: 'Question' });
+    updateVideoPreview();
+
+    $('sbEdForm').oninput = markFormDirty;
+    $('edVid').addEventListener('input', updateVideoPreview);
+    $('edOpenPage').addEventListener('click', () => {
+      if (formDirty && !confirm('You have unsaved changes in this form. Leave without saving?')) return;
+      formDirty = false; AUTO_EDIT = n; window.openModule(n);
+    });
+    $('edAddG').addEventListener('click', () => qMutate('edG', false, { explain: false, label: 'Guide question' }, cur => cur.push({ q: '', o: ['', '', ''], a: 0 })));
+    $('edAddQ').addEventListener('click', () => qMutate('edQ', true, { explain: true, label: 'Question' }, cur => cur.push({ q: '', o: ['', '', ''], a: 0, w: '' })));
+    $('edSave').addEventListener('click', saveForm);
+    $('edPreview').addEventListener('click', previewForm);
+    $('edReset').addEventListener('click', () => resetModule(n));
+    $('edExport').addEventListener('click', exportHtml);
+  }
+
+  function updateVideoPreview() {
+    const id = parseYouTube($('edVid').value);
+    $('edVidPrev').innerHTML = id
+      ? `<div class="sb-vprev"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0" allowfullscreen loading="lazy" title="Video preview"></iframe></div>`
+      : (id === null ? '<p class="hint" style="color:var(--bad)">That does not look like a valid YouTube link or ID.</p>' : '');
+  }
+
+  function qMutate(boxId, explain, opts, fn) {
+    const cur = collectQList(boxId, explain);
+    fn(cur);
+    renderQList(boxId, cur, opts);
+    markFormDirty();
+  }
+
+  function renderQList(boxId, list, opts) {
+    const box = $(boxId); box.innerHTML = '';
+    list.forEach((q, i) => {
+      const d = document.createElement('div'); d.className = 'sb-item sb-q';
+      d.innerHTML = `<div class="sb-head"><span>${opts.label} ${i + 1}</span><button type="button" class="sb-mini danger qDel">Remove</button></div>
+        <textarea class="qQ" rows="2" placeholder="Question text"></textarea>
+        <div class="qOpts"></div>
+        <button type="button" class="sb-mini qAddO">＋ Add choice</button>
+        ${opts.explain ? '<input type="text" class="qW" placeholder="Explanation shown after submitting" style="margin-top:8px">' : ''}`;
+      d.querySelector('.qQ').value = q.q || '';
+      if (opts.explain) d.querySelector('.qW').value = q.w || '';
+      const ob = d.querySelector('.qOpts');
+      (q.o || []).forEach((o, j) => {
+        const r = document.createElement('div'); r.className = 'sb-opt';
+        r.innerHTML = `<input type="radio" name="${boxId}_a${i}" value="${j}" ${+q.a === j ? 'checked' : ''} title="Correct answer"><input type="text" class="qO" placeholder="Choice ${String.fromCharCode(65 + j)}"><button type="button" class="sb-mini danger" title="Remove choice">✕</button>`;
+        r.querySelector('.qO').value = o || '';
+        r.querySelector('button').addEventListener('click', () => qMutate(boxId, opts.explain, opts, cur => {
+          if (cur[i].o.length <= 2) { toast('A question needs at least 2 choices.', 'warn'); return; }
+          cur[i].o.splice(j, 1);
+          if (cur[i].a === j) cur[i].a = 0; else if (cur[i].a > j) cur[i].a--;
+        }));
+        ob.appendChild(r);
+      });
+      d.querySelector('.qAddO').addEventListener('click', () => qMutate(boxId, opts.explain, opts, cur => {
+        if (cur[i].o.length >= 6) { toast('Maximum 6 choices.', 'warn'); return; }
+        cur[i].o.push('');
+      }));
+      d.querySelector('.qDel').addEventListener('click', () => qMutate(boxId, opts.explain, opts, cur => { cur.splice(i, 1); }));
+      box.appendChild(d);
+    });
+  }
+
+  function collectQList(boxId, explain) {
+    return [...document.querySelectorAll('#' + boxId + ' .sb-q')].map(card => {
+      const sel = card.querySelector('input[type=radio]:checked');
+      const o = { q: card.querySelector('.qQ').value.trim(), o: [...card.querySelectorAll('.qO')].map(i => i.value.trim()), a: sel ? +sel.value : 0 };
+      if (explain) o.w = card.querySelector('.qW').value.trim();
+      return o;
+    });
+  }
+
+  const normPerf = list => (list || []).map(q => ({ q: String(q.q || '').trim(), o: (q.o || []).map(x => String(x).trim()), a: +q.a || 0, w: String(q.w || '').trim() }));
+  const normGuide = g => ({ title: String((g && g.title) || '').trim(), questions: ((g && g.questions) || []).map(q => ({ q: String(q.q || '').trim(), o: (q.o || []).map(x => String(x).trim()), a: +q.a || 0 })) });
+
+  function collectForm() {
+    const v = {
+      video_id: parseYouTube($('edVid').value),
+      guide: { title: $('edGTitle').value.trim(), questions: collectQList('edG', false) },
+      performance: collectQList('edQ', true)
+    };
+    if (v.video_id === null) throw new Error('The video link is not a valid YouTube link or ID.');
+    if (!v.guide.questions.length) throw new Error('Add at least one guide question.');
+    if (!v.performance.length) throw new Error('Add at least one performance question.');
+    [['Guide question', v.guide.questions], ['Question', v.performance]].forEach(([lab, list]) => list.forEach((q, i) => {
+      if (!q.q) throw new Error(lab + ' ' + (i + 1) + ' has no question text.');
+      if (q.o.length < 2 || q.o.some(o => !o)) throw new Error(lab + ' ' + (i + 1) + ' needs at least 2 choices and none may be empty.');
+      if (q.a < 0 || q.a >= q.o.length) throw new Error(lab + ' ' + (i + 1) + ': pick the correct answer.');
+    }));
+    return v;
+  }
+
+  function formToFields(n, v) {
+    const d = DEFAULTS[n];
+    return {
+      video_id: (!v.video_id || v.video_id === d.video_id) ? null : v.video_id,
+      guide: same(normGuide(v.guide), normGuide(d.guide)) ? null : normGuide(v.guide),
+      performance: same(normPerf(v.performance), normPerf(d.performance)) ? null : normPerf(v.performance)
+    };
+  }
+
+  async function saveForm() {
+    const n = edModule; let v;
+    try { v = collectForm(); } catch (e) { toast(e.message, 'err'); return; }
+    const btn = $('edSave'); btn.disabled = true;
+    try {
+      await upsertRow(n, formToFields(n, v));
+      applyRow(n, CONTENT_ROWS[n] || null);
+      formDirty = false;
+      toast('Module ' + n + ' saved ✓ — learners see it the next time they open the module.', 'ok');
+      renderEditor(n);
+    } catch (e) { console.warn('[EASC] save:', e); toast('Save failed: ' + (e.message || e), 'err'); }
+    finally { btn.disabled = false; }
+  }
+
+  function previewForm() {
+    let v; try { v = collectForm(); } catch (e) { toast(e.message, 'err'); return; }
+    applyRow(edModule, Object.assign({}, CONTENT_ROWS[edModule] || {}, { video_id: v.video_id || null, guide: normGuide(v.guide), performance: normPerf(v.performance) }));
+    toast('Previewing unsaved changes — click “Save to Supabase” to keep them.', 'warn');
+    formDirty = false;
+    window.openModule(edModule);
+  }
+
+  /* ───────────── 9. EXPORT HTML (edits baked into index.html) ───────────── */
+  function bakedFor(n) {
+    const r = CONTENT_ROWS[n] || {}, b = BAKED[n] || {}, out = {};
+    ['objectives', 'content_html', 'examples', 'video_id', 'activity_html', 'performance', 'guide'].forEach(k => {
+      const v = r[k] != null ? r[k] : b[k];
+      if (v != null) out[k] = v;
+    });
+    const blocks = mergedBlocks(n, true);
+    if (Object.keys(blocks).length) out.blocks = blocks;
+    return Object.keys(out).length ? out : null;
+  }
+
+  function pickFile() {
+    return new Promise(res => {
+      const i = document.createElement('input');
+      i.type = 'file'; i.accept = '.html,.htm,text/html';
+      i.onchange = () => {
+        const f = i.files && i.files[0];
+        if (!f) return res(null);
+        const r = new FileReader();
+        r.onload = () => res(String(r.result)); r.onerror = () => res(null);
+        r.readAsText(f);
+      };
+      i.addEventListener('cancel', () => res(null));
+      i.click();
+    });
+  }
+
+  async function exportHtml() {
+    if (formDirty && !confirm('The Video / questions form has unsaved changes that will NOT be in the export. Export anyway?')) return;
+    let src = null;
+    if (location.protocol !== 'file:') {
+      try {
+        const u = location.href.split('#')[0].split('?')[0];
+        const r = await fetch(u + '?_=' + Date.now(), { cache: 'no-store' });
+        if (r.ok) src = await r.text();
+      } catch (e) { /* fall through to the file picker */ }
+    }
+    if (!src || src.indexOf(MARK) < 0) {
+      toast('Please select the index.html you currently use (the one on GitHub).', 'warn');
+      src = await pickFile();
+      if (!src) return;
+    }
+    if (src.indexOf(MARK) < 0) { toast('That file is not the EAS•C courseware with the Supabase integration.', 'err'); return; }
+
+    const modules = {}; let count = 0;
+    for (let n = 1; n <= 5; n++) { const b = bakedFor(n); if (b) { modules[n] = b; count++; } }
+
+    const nl = src.indexOf('\r\n') >= 0 ? '\r\n' : '\n';
+    src = src.replace(new RegExp('<' + SC + ' id="' + BAKED_ID + '"[\\s\\S]*?<\\/' + SC + '>[ \\t]*\\r?\\n?'), '');
+    const json = JSON.stringify({ v: 1, exported: new Date().toISOString(), modules })
+      .replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+    const tag = '<' + SC + ' id="' + BAKED_ID + '" type="application/json">' + json + '</' + SC + '>' + nl;
+    const at = src.indexOf(MARK);
+    const out = src.slice(0, at) + tag + src.slice(at);
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([out], { type: 'text/html;charset=utf-8' }));
+    a.download = 'index.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast(count ? 'index.html downloaded with the edits of ' + count + ' module(s) included. Upload it to GitHub to replace the old file.'
+                : 'index.html downloaded (no edits yet). Make edits first, then export again.', count ? 'ok' : 'warn');
+  }
+
+  /* ───────────── 10. PROGRESS SYNC (students) ───────────── */
+  let lastSaved = {}, pushing = false;
+
+  function snap() {
+    const o = {};
+    for (let i = 1; i <= 6; i++) { const p = state.progress[i] || {}; o[i] = (p.completed ? 1 : 0) + ':' + Math.round(+p.score || 0); }
+    return o;
+  }
+  function setSync(s) {
+    const e = $('sbSync'); if (!e) return;
+    e.textContent = s === 'saving' ? '☁ Saving…' : s === 'error' ? '⚠ Offline — will retry' : '☁ Saved';
+    e.style.color = s === 'error' ? 'var(--bad)' : '';
+  }
+  function clearLocalProgress() {
+    LOCAL_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+    Object.keys(state.progress).forEach(k => { state.progress[k].completed = false; state.progress[k].score = 0; });
+  }
+  async function loadProgress() {
+    const { data, error } = await sb.from('module_progress').select('module_no,completed,score').eq('user_id', ME.id);
+    if (error) { console.warn('[EASC] progress load:', error); toast('Could not load your saved progress.', 'warn'); }
+    (data || []).forEach(r => { const p = state.progress[r.module_no]; if (p) { p.completed = !!r.completed; p.score = r.score || 0; } });
+    lastSaved = snap();
+    if (typeof window.EASC_refresh === 'function') window.EASC_refresh();
+  }
+  async function pushProgress() {
+    if (!ME || ME.role !== 'student' || pushing) return;
+    const now = snap(), rows = [];
+    for (let i = 1; i <= 6; i++) {
+      if (now[i] !== lastSaved[i]) {
+        const p = state.progress[i];
+        rows.push({ user_id: ME.id, module_no: i, completed: !!p.completed, score: Math.max(0, Math.min(100, Math.round(+p.score || 0))) });
+      }
+    }
+    if (!rows.length) return;
+    pushing = true; setSync('saving');
+    try {
+      const { error } = await sb.from('module_progress').upsert(rows, { onConflict: 'user_id,module_no' });
+      if (error) throw error;
+      rows.forEach(r => { lastSaved[r.module_no] = now[r.module_no]; });
+      setSync('ok');
+    } catch (e) { console.warn('[EASC] progress save:', e); setSync('error'); }
+    pushing = false;
+  }
+  function startProgressSync() {
+    ['updateUIProgress', 'markModuleComplete'].forEach(fn => {
+      const orig = window[fn];
+      if (typeof orig !== 'function') return;
+      window[fn] = function () { const r = orig.apply(this, arguments); setTimeout(pushProgress, 250); return r; };
+    });
+    setInterval(pushProgress, 2500);
+    window.addEventListener('pagehide', pushProgress);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) pushProgress(); });
+  }
+
+  /* ───────────── 11. LOGIN SCREEN ───────────── */
+  function buildAuth() {
+    const d = document.createElement('div');
+    d.id = 'sbAuth'; d.className = 'sb-auth';
+    d.innerHTML = `
+    <div class="sb-card">
+      <div class="sb-brand"><div class="mark">Σ</div><div><b>EAS•C</b><small>ENHANCING ACTIVITIES IN STATISTICS COURSEWARE</small></div></div>
+      <div id="sbStepRole">
+        <h2>Welcome! Who is signing in?</h2>
+        <p class="sb-sub">Choose your role to continue.</p>
+        <div class="sb-roles">
+          <button type="button" class="sb-role" data-role="student"><span>🎓</span><b>I'm a Student</b><small>Study the modules and save your progress</small></button>
+          <button type="button" class="sb-role" data-role="teacher"><span>👩‍🏫</span><b>I'm a Teacher</b><small>Monitor all learners and edit the lessons</small></button>
+        </div>
+        <div class="sb-msg err" id="sbBootMsg"></div>
+      </div>
+      <form id="sbStepForm" hidden autocomplete="on">
+        <h2 id="sbFormTitle">Sign in</h2>
+        <p class="sb-sub" id="sbFormSub"></p>
+        <div class="sb-tabs">
+          <button type="button" class="sb-tab on" data-mode="signin">Sign in</button>
+          <button type="button" class="sb-tab" data-mode="signup">Create account</button>
+        </div>
+        <label class="sb-field" id="sbNameRow" hidden><span>Full name (used on your certificate)</span><input id="sbName" type="text" autocomplete="name"></label>
+        <label class="sb-field"><span>Email</span><input id="sbEmail" type="email" autocomplete="email" required></label>
+        <label class="sb-field"><span>Password</span><input id="sbPass" type="password" autocomplete="current-password" minlength="6" required><small>At least 6 characters.</small></label>
+        <label class="sb-field" id="sbCodeRow" hidden><span>Teacher access code</span><input id="sbCode" type="password" autocomplete="off"><small>Needed the first time you use a teacher account. Ask your administrator.</small></label>
+        <div class="sb-msg" id="sbMsg"></div>
+        <button class="btn sb-go" id="sbSubmit" type="submit">Sign in</button>
+        <button class="sb-link" id="sbBack" type="button">← Change role</button>
+      </form>
+    </div>`;
     document.body.appendChild(d);
+    d.querySelectorAll('.sb-role').forEach(b => b.addEventListener('click', () => pickRole(b.dataset.role)));
+    d.querySelectorAll('.sb-tab').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+    $('sbBack').addEventListener('click', () => { $('sbStepForm').hidden = true; $('sbStepRole').hidden = false; setMsg(''); });
+    $('sbStepForm').addEventListener('submit', onSubmitAuth);
+  }
+  function setMsg(t, kind) { const m = $('sbMsg'); if (m) { m.textContent = t || ''; m.className = 'sb-msg ' + (kind || ''); } }
+  function pickRole(r) {
+    chosenRole = r;
+    $('sbStepRole').hidden = true; $('sbStepForm').hidden = false;
+    $('sbCodeRow').hidden = r !== 'teacher';
+    $('sbFormSub').innerHTML = 'Signing in as a <span class="sb-who ' + r + '">' + r.toUpperCase() + '</span>';
+    setMode('signin'); setMsg('');
+    $('sbEmail').focus();
+  }
+  function setMode(m) {
+    authMode = m;
+    document.querySelectorAll('#sbAuth .sb-tab').forEach(t => t.classList.toggle('on', t.dataset.mode === m));
+    $('sbNameRow').hidden = m !== 'signup';
+    $('sbFormTitle').textContent = m === 'signup' ? 'Create your account' : 'Sign in';
+    $('sbSubmit').textContent = m === 'signup' ? 'Create account' : 'Sign in';
+    $('sbPass').autocomplete = m === 'signup' ? 'new-password' : 'current-password';
+    setMsg('');
+  }
+  async function onSubmitAuth(e) {
+    e.preventDefault(); setMsg('');
+    const btn = $('sbSubmit'); btn.disabled = true;
+    const email = $('sbEmail').value.trim(), password = $('sbPass').value;
+    const name = $('sbName').value.trim(), code = $('sbCode').value.trim();
+    try {
+      if (authMode === 'signup') {
+        if (!name) throw new Error('Please enter your full name.');
+        const { data, error } = await sb.auth.signUp({ email, password, options: { data: { full_name: name } } });
+        if (error) throw error;
+        if (!data.session) { setMode('signin'); setMsg('Account created! Check your email to confirm it, then sign in here.', 'ok'); return; }
+        await afterLogin(data.session, code);
+      } else {
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await afterLogin(data.session, code);
+      }
+    } catch (err) { setMsg(err && err.message ? err.message : String(err), 'err'); }
+    finally { btn.disabled = false; }
+  }
+  async function loadProfile(uid) {
+    for (let i = 0; i < 5; i++) {
+      const { data, error } = await sb.from('profiles').select('id,full_name,email,role').eq('id', uid).maybeSingle();
+      if (error) throw error;
+      if (data) return data;
+      await sleep(400);
+    }
+    throw new Error('Profile not found. Did you run supabase_schema.sql?');
+  }
+  async function afterLogin(session, code) {
+    let prof = await loadProfile(session.user.id);
+    if (chosenRole === 'teacher' && prof.role !== 'teacher') {
+      if (!code) { await sb.auth.signOut(); throw new Error('Enter the teacher access code to use a teacher account.'); }
+      const { data: ok, error } = await sb.rpc('claim_teacher_role', { p_code: code });
+      if (error) { await sb.auth.signOut(); throw error; }
+      if (!ok) { await sb.auth.signOut(); throw new Error('Invalid teacher access code.'); }
+      prof = await loadProfile(session.user.id);
+    }
+    if (chosenRole === 'student' && prof.role === 'teacher') {
+      await sb.auth.signOut();
+      throw new Error('This is a teacher account. Go back and choose "Teacher".');
+    }
+    await startApp(prof);
   }
 
-  /* ───────────── boot ───────────── */
-  function boot() {
-    setTimeout(diagnose, 800);
-    // keep formulas as plain text inside editing zones
-    if (typeof window.renderMathInElement === 'function' && !window.renderMathInElement.__ed) {
-      const o = window.renderMathInElement;
-      const w = function (el, opts) { opts = Object.assign({}, opts || {}); opts.ignoredClasses = (opts.ignoredClasses || []).concat(['ed-zone', 'ed-li']); return o.call(this, el, opts); };
-      w.__ed = true; window.renderMathInElement = w;
+  /* ───────────── 12. START / STOP ───────────── */
+  async function startApp(prof) {
+    ME = { id: prof.id, name: prof.full_name || prof.email || 'Learner', email: prof.email, role: prof.role };
+    document.body.classList.add('sb-role-' + ME.role);
+    clearLocalProgress();
+    await loadContent();
+    installModuleHook();
+    if (ME.role === 'student') {
+      state.userName = String(ME.name).toUpperCase();
+      await loadProgress();
+      startProgressSync();
     }
-    watch(); hookTest();
-    if (EDITOR_ON) buildPanel();
-    fixCounts();
-    // module/test views may be re-rendered later – keep counts right
-    const sv = window.showView; if (S.test) window.showView = function () { const r = sv.apply(this, arguments); setTimeout(fixCounts, 30); return r; };
+    buildChip();
+    if (ME.role === 'teacher') { buildTeacherUI(); buildTeacherBar(); }
+    sb.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', ME.id).then(() => {});
+    $('sbAuth').hidden = true;
   }
+  function buildChip() {
+    const c = document.createElement('div');
+    c.className = 'profile'; c.id = 'sbChip';
+    c.innerHTML = `<b>${esc(ME.name)}</b><span>${esc(ME.email || '')}</span>
+      <div class="sb-row2"><span class="sb-who ${ME.role}" style="margin:0">${ME.role.toUpperCase()}</span><button type="button" id="sbLogout">Log out</button></div>
+      ${ME.role === 'student' ? '<span id="sbSync">☁ Saved</span>' : ''}`;
+    document.querySelector('.sidebar').appendChild(c);
+    $('sbLogout').addEventListener('click', logout);
+  }
+  async function logout() {
+    if (pageDirty && !confirm('You have unsaved page edits. Log out anyway?')) return;
+    pageDirty = false; formDirty = false;
+    if (ME && ME.role === 'student') await pushProgress();
+    try { await sb.auth.signOut(); } catch (e) {}
+    clearLocalProgress();
+    location.reload();
+  }
+
+  /* ───────────── 13. TEACHER UI (nav, progress table) ───────────── */
+  function buildTeacherUI() {
+    document.querySelector('.nav').insertAdjacentHTML('beforeend',
+      '<div class="sb-navhead">Teacher</div>' +
+      '<button type="button" id="sbNavProg">📊 &nbsp; LEARNER PROGRESS</button>' +
+      '<button type="button" id="sbNavEdit">🎞 &nbsp; VIDEO &amp; QUESTIONS</button>' +
+      '<button type="button" id="sbNavExport">⬇ &nbsp; EXPORT HTML</button>');
+    $('sbNavProg').addEventListener('click', e => openProgress(e.currentTarget));
+    $('sbNavEdit').addEventListener('click', e => openEditor(null, e.currentTarget));
+    $('sbNavExport').addEventListener('click', exportHtml);
+
+    document.querySelector('.main').insertAdjacentHTML('beforeend', `
+    <section id="sbProgress" class="page">
+      <div class="top"><div><div class="kicker">TEACHER</div><h2>LEARNER PROGRESS</h2>
+        <div class="sub">Every registered student, with module scores and the written test.</div></div></div>
+      <div class="sb-stats" id="sbStats"></div>
+      <div class="sb-bar">
+        <input id="sbSearch" type="search" placeholder="Search name or email…">
+        <select id="sbSort"><option value="name">Sort: name</option><option value="progress">Sort: progress (high → low)</option><option value="recent">Sort: recent activity</option></select>
+        <button type="button" class="btn secondary" id="sbRefresh">⟳ Refresh</button>
+        <button type="button" class="btn secondary" id="sbCsv">⬇ Export CSV</button>
+      </div>
+      <div class="sb-wrap"><table class="sb-table"><thead><tr>
+        <th>Learner</th>${[1, 2, 3, 4, 5].map(i => '<th>M' + i + '</th>').join('')}<th>Written test</th><th>Progress</th><th>Last activity</th>
+      </tr></thead><tbody id="sbLearnerBody"></tbody></table></div>
+    </section>
+
+    <section id="sbEditor" class="page">
+      <div class="top"><div><div class="kicker">TEACHER</div><h2>VIDEO &amp; QUESTIONS</h2>
+        <div class="sub">Video, guide questions and performance questions. (Everything else is edited on the module page itself.)</div></div></div>
+      <div class="sb-mtabs" id="sbMTabs"></div>
+      <div id="sbEdForm"></div>
+    </section>`);
+
+    $('sbSearch').addEventListener('input', renderLearners);
+    $('sbSort').addEventListener('change', renderLearners);
+    $('sbRefresh').addEventListener('click', loadLearners);
+    $('sbCsv').addEventListener('click', exportCsv);
+  }
+
+  function openProgress(btn) { showView('sbProgress', btn || $('sbNavProg')); loadLearners(); }
+
+  async function loadLearners() {
+    $('sbLearnerBody').innerHTML = '<tr><td colspan="9" class="sb-dim">Loading…</td></tr>';
+    const { data, error } = await sb.from('learner_overview').select('*').order('full_name');
+    if (error) { $('sbLearnerBody').innerHTML = '<tr><td colspan="9" style="color:var(--bad)">Could not load learners: ' + esc(error.message) + '</td></tr>'; return; }
+    LEARNERS = data || [];
+    renderLearners();
+  }
+  const fmtDate = d => d ? new Date(d).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+  const overall = l => Math.round((l.modules_completed || 0) / 5 * 100);
+
+  function renderLearners() {
+    const q = ($('sbSearch').value || '').toLowerCase().trim(), sort = $('sbSort').value;
+    const rows = LEARNERS.filter(l => ((l.full_name || '') + ' ' + (l.email || '')).toLowerCase().includes(q));
+    rows.sort((a, b) =>
+      sort === 'progress' ? overall(b) - overall(a) || (b.test_score - a.test_score)
+      : sort === 'recent' ? String(b.last_activity || b.last_seen || '').localeCompare(String(a.last_activity || a.last_seen || ''))
+      : String(a.full_name || a.email).localeCompare(String(b.full_name || b.email)));
+    const attempted = LEARNERS.filter(l => l.test_score > 0);
+    const avgProg = LEARNERS.length ? Math.round(LEARNERS.reduce((s, l) => s + overall(l), 0) / LEARNERS.length) : 0;
+    const avgTest = attempted.length ? Math.round(attempted.reduce((s, l) => s + l.test_score, 0) / attempted.length) : 0;
+    $('sbStats').innerHTML =
+      `<div class="sb-stat"><b>${LEARNERS.length}</b><span>REGISTERED LEARNERS</span></div>
+       <div class="sb-stat"><b>${avgProg}%</b><span>AVERAGE PROGRESS</span></div>
+       <div class="sb-stat"><b>${LEARNERS.filter(l => l.test_passed).length}</b><span>PASSED WRITTEN TEST</span></div>
+       <div class="sb-stat"><b>${attempted.length ? avgTest + '%' : '—'}</b><span>AVG TEST SCORE (ATTEMPTED)</span></div>`;
+    const cell = (l, i) => l['m' + i + '_done'] ? `<span class="sb-ok">✓ ${l['m' + i + '_score']}%</span>`
+      : l['m' + i + '_score'] ? `<span class="sb-warn">${l['m' + i + '_score']}%</span>` : '<span class="sb-dim">—</span>';
+    $('sbLearnerBody').innerHTML = rows.length ? rows.map(l => `<tr>
+      <td><b>${esc(l.full_name || '(no name)')}</b><small>${esc(l.email || '')}</small></td>
+      ${[1, 2, 3, 4, 5].map(i => '<td>' + cell(l, i) + '</td>').join('')}
+      <td>${l.test_passed ? `<span class="sb-ok">✓ Passed ${l.test_score}%</span>` : l.test_score ? `<span class="sb-warn">${l.test_score}%</span>` : '<span class="sb-dim">Not taken</span>'}</td>
+      <td><div class="sb-pbar"><i style="width:${overall(l)}%"></i></div><small>${l.modules_completed || 0}/5 modules</small></td>
+      <td>${fmtDate(l.last_activity || l.last_seen)}</td></tr>`).join('')
+      : '<tr><td colspan="9" class="sb-dim">No learners found.</td></tr>';
+  }
+
+  function exportCsv() {
+    const safe = v => { v = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
+    const head = ['Name', 'Email', 'M1 score', 'M1 done', 'M2 score', 'M2 done', 'M3 score', 'M3 done', 'M4 score', 'M4 done', 'M5 score', 'M5 done',
+      'Modules completed', 'Written test score', 'Written test passed', 'Last activity'];
+    const lines = [head.map(safe).join(',')].concat(LEARNERS.map(l => [
+      l.full_name, l.email, l.m1_score, l.m1_done, l.m2_score, l.m2_done, l.m3_score, l.m3_done, l.m4_score, l.m4_done,
+      l.m5_score, l.m5_done, l.modules_completed, l.test_score, l.test_passed, l.last_activity || l.last_seen || ''].map(safe).join(',')));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'easc-learner-progress.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  /* ───────────── 14. BOOT ───────────── */
+  async function boot() {
+    buildAuth();
+    const fail = msg => { $('sbBootMsg').textContent = msg; document.querySelectorAll('#sbAuth .sb-role').forEach(b => { b.disabled = true; }); };
+
+    if (typeof state === 'undefined' || !C() || !C().GG) { fail('This index.html is missing the EASC_CONTENT patch — use the patched index.html.'); return; }
+    if (/YOUR-/.test(SUPABASE_URL + SUPABASE_ANON_KEY)) { fail('Supabase is not configured yet. Open the file and set SUPABASE_URL and SUPABASE_ANON_KEY.'); return; }
+    if (!window.supabase || !window.supabase.createClient) { fail('Could not load supabase-js (check your internet connection).'); return; }
+
+    // keep KaTeX away from blocks that are being edited
+    if (typeof window.renderMathInElement === 'function' && !window.renderMathInElement.__sb) {
+      const orig = window.renderMathInElement;
+      const wrapped = function (el, opts) {
+        opts = Object.assign({}, opts || {});
+        opts.ignoredClasses = (opts.ignoredClasses || []).concat(['sb-eb-on']);
+        return orig.call(this, el, opts);
+      };
+      wrapped.__sb = true;
+      window.renderMathInElement = wrapped;
+    }
+
+    snapshotDefaults();
+    Object.assign(BAKED, readBaked());                    // edits exported earlier and shipped inside this file
+    Object.keys(BAKED).forEach(n => applyRow(+n, BAKED[n]));
+    snapshotDefaults();                                   // from now on "built-in" = shipped + baked
+
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    sb.auth.onAuthStateChange(evt => { if (evt === 'SIGNED_OUT' && ME) { clearLocalProgress(); location.reload(); } });
+
+    try {
+      const { data } = await sb.auth.getSession();
+      if (data && data.session) await startApp(await loadProfile(data.session.user.id));
+    } catch (e) {
+      console.warn('[EASC] session restore:', e);
+      try { await sb.auth.signOut(); } catch (_) {}
+    }
+  }
+
+  window.EASC_SB = { openEditor, exportHtml, logout, get user() { return ME; } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 
 </script>
-<!-- Supabase integration (login, progress sync, teacher tools) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
-<script src="easc-supabase.js"></script>
 </body></html>
