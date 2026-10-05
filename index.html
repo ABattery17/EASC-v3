@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script>window.__eascErrs=[];window.addEventListener("error",function(e){window.__eascErrs.push((e.message||"error")+" @"+(e.lineno||"?")+":"+(e.colno||"?")+" "+String(e.filename||"").split("/").pop())});</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>EAS•C — Enhancing Activities in Statistics Courseware</title>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -2549,6 +2549,7 @@ html[data-theme=light] .edModal>div{background:#fff;color:#12203a}
   window.EASC_TEST_N = S.test ? S.test.length : 150;
 
   const C = window.EASC_CONTENT;
+  if (!C) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(diagnose, 800)); }
   const copyItem = it => {
     const o = { q: it.q, o: it.o.slice(), a: it.a, w: it.w || '' };
     if (it.r && it.r.some(Boolean)) { o.r = it.o.map((_, i) => it.r[i] || ''); }
@@ -3052,8 +3053,21 @@ html[data-theme=light] .edModal>div{background:#fff;color:#12203a}
     if (restored) toast('Your unexported draft was restored.');
   }
 
+  
+  /* diagnostics: if the courseware data failed to load, show why */
+  function diagnose() {
+    if ((window.EASC_CONTENT && typeof state !== 'undefined') || diagnose.done) return;
+    diagnose.done = true;
+    const errs = (window.__eascErrs || []).slice(0, 6).map(e => '• ' + e).join('\n') || '(no script error was recorded)';
+    const d = document.createElement('pre');
+    d.style.cssText = 'position:fixed;left:8px;right:8px;top:8px;z-index:30000;background:#3a0014;color:#fff;border:2px solid #ff6482;border-radius:10px;padding:12px;font:12px/1.4 monospace;white-space:pre-wrap;max-height:60vh;overflow:auto';
+    d.textContent = 'EAS•C DIAGNOSTIC — courseware data did not load\nEASC_CONTENT: ' + typeof window.EASC_CONTENT + '   state: ' + (typeof state) + '\nPage: ' + location.href + '\nBrowser: ' + navigator.userAgent + '\nErrors:\n' + errs + '\n\nSend a screenshot of this box.';
+    document.body.appendChild(d);
+  }
+
   /* ───────────── boot ───────────── */
   function boot() {
+    setTimeout(diagnose, 800);
     // keep formulas as plain text inside editing zones
     if (typeof window.renderMathInElement === 'function' && !window.renderMathInElement.__ed) {
       const o = window.renderMathInElement;
